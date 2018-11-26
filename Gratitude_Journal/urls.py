@@ -16,6 +16,9 @@ Including another URLconf
 from django.contrib import admin
 from django.urls import path
 
+import journals
+
 urlpatterns = [
+    path('', journals.views.index),
     path('admin/', admin.site.urls),
 ]
