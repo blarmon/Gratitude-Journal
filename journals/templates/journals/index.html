@@ -1,0 +1,12 @@
+{% extends 'journals/base.html' %}
+
+{% block content %}
+
+
+index
+
+{% if user.is_authenticated %}
+    {{ user.username }}
+{% endif %}
+
+{% endblock %}

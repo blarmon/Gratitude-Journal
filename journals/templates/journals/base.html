@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Postman Clone</title>
+
+    <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/css/bootstrap.min.css">
+
+    <!-- jQuery library -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+
+    <!-- Popper JS -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/popper.js/1.14.3/umd/popper.min.js"></script>
+
+    <!-- Latest compiled JavaScript -->
+    <script src="https://maxcdn.bootstrapcdn.com/bootstrap/4.1.3/js/bootstrap.min.js"></script>
+
+</head>
+<body>
+<nav class="navbar navbar-light bg-light">
+    <div class="container-fluid">
+    <div class="navbar-header">
+      <a class="navbar-brand" href="{% url 'index' %}">Gratitude Journal</a>
+    </div>
+    <ul class="nav navbar-nav">
+        <li class="active">
+        <span>
+            <a href="{% url 'index' %}"> Home&nbsp;</a>|
+            <span class="dropdown">
+          <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
+            Dropdown button
+          </button>
+          <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
+              {% if user.is_authenticated %}
+                Hello, {{ user.username }}
+                  <a class="dropdown-item" href="#">Profile</a>
+                  <a class="dropdown-item" href="{% url 'logout' %}">Log out</a>
+                  {% else %}
+                  <a class="dropdown-item" href="{% url 'login' %}">Log In</a>
+                  <a class="dropdown-item" href="{% url 'register' %}">Register</a>
+                  {% endif %}
+          </div>
+            </span>
+        </span>
+        </li>
+    </ul>
+    </div>
+</nav>
+
+    <div class="container">
+    {% block content %}
+        {% endblock %}
+    </div>
+</body>
+</html>

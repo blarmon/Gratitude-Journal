@@ -1,0 +1,15 @@
+<title>Explore</title>
+
+{% extends 'journals/base.html' %}
+
+{% block content %}
+
+Explore page
+{% if user.is_authenticated %}
+    {{ user.username }}
+{% else %}
+<a href="{% url 'login'%}">Log In</a>&nbsp;|
+<a href="{% url 'register'%}">Register</a>
+{% endif %}
+
+{% endblock %}
