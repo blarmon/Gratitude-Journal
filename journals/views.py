@@ -5,14 +5,14 @@ from django.contrib.auth import authenticate, login
 
 # Create your views here.
 def index(request):
-    context = {}
+    context = {'title': 'Home'}
     if request.user.is_authenticated:
         return render(request, 'journals/index.html', context)
     else:
         return redirect('explore')
 
 def explore(request):
-    context = {}
+    context = {'title': 'Explore'}
     return render(request, 'journals/explore.html', context)
 
 def register(request):
