@@ -2,11 +2,41 @@
 
 {% block content %}
 
-
+<a href="{% url 'explore' %}">Explore</a>
 index
 
 {% if user.is_authenticated %}
     {{ user.username }}
+<form method="post">
+    {% csrf_token %}
+    <!--display form errors, if any -->
+    {% if form.errors %}
+        {% for field in form %}
+            {% for error in field.errors %}
+                <div class="alert alert-danger">
+                    <strong>{{ error|escape }}</strong>
+                </div>
+            {% endfor %}
+        {% endfor %}
+        {% for error in form.non_field_errors %}
+            <div class="alert alert-danger">
+                <strong>{{ error|escape }}</strong>
+            </div>
+        {% endfor %}
+    {% endif %}
+    <!--Display my forms fields-->
+    <div>{{ form.title.label_tag }}</div>
+    <div>{{ form.title }}{{ form.public.label_tag }}{{ form.public }}</div>
+    {{ form.body.label_tag }}
+    <div>{{ form.body }}</div>
+    <div><input type="submit" value="Submit" id="submit"></div>
+</form>
+
+{% for journal in latest_three_journals %}
+<div>{{ journal.title }}</div>
+<div class="recent_post">{{ journal.body }}</div>
+{% endfor %}
+
 {% endif %}
 
 {% endblock %}

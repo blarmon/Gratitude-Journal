@@ -12,4 +12,9 @@ Explore page
 <a href="{% url 'register'%}">Register</a>
 {% endif %}
 
+{% for journal in public_journals %}
+<div>{{ journal.title }}</div>
+<div class="public_post">{{ journal.body }}</div>
+{% endfor %}
+
 {% endblock %}
