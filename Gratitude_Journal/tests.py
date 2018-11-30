@@ -75,4 +75,26 @@ class UserTestCase(LiveServerTestCase):
         public_posts = self.browser.find_elements_by_css_selector('.public_post')
         self.assertEqual(len(public_posts), 2)
 
-        self.fail('incomplete test')
+    def test_user_explores_their_own_profile(self):
+        #the user will see an archive of ALL of their posts (public and private), ordered by date.  clicking on one will take them to the page to view a single journal.  they can filter for public or private only, if they so wish.
+        pass
+
+    def test_user_explores_another_users_profile(self):
+        #the user will see an archive of another users public posts, order by date. clicking on one will take them to the page to view a single journal.
+        pass
+
+    def test_user_explores_aboutslashresearch_page(self):
+        #user goes to the research (working title) page.
+        pass
+
+class UnauthenticatedUserTestCase(LiveServerTestCase):
+
+    def setUp(self):
+        self.browser = webdriver.Chrome('C:\Program Files (x86)\Google\ChromeDriver\chromedriver.exe')
+        self.browser.implicitly_wait(2)
+
+    def tearDown(self):
+        self.browser.quit()
+
+    def test_unauthenticated_user_uses_explore_page(self):
+        pass
