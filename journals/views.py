@@ -1,6 +1,9 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.models import User
+from django.contrib.auth.models import User
+
 from journals.forms import JournalForm
 from journals.models import Journal
 
@@ -21,7 +24,7 @@ def index(request):
         latest_three_journals = Journal.objects.all().order_by('date')[:3]
 
         form = JournalForm
-        context = {'title': 'Home', 'form': form, 'latest_three_journals': latest_three_journals}
+        context = {'title': 'Home', 'form': form, 'user_id': request.user.id, 'latest_three_journals': latest_three_journals}
         return render(request, 'journals/index.html', context)
     else:
         return redirect('explore')
@@ -30,6 +33,12 @@ def explore(request):
     public_journals = Journal.objects.filter(public=True)
     context = {'title': 'Explore', 'public_journals': public_journals}
     return render(request, 'journals/explore.html', context)
+
+def profile(request, user_id):
+    user_journals = Journal.objects.filter(user=request.user)
+
+    context = {'user_journals': user_journals}
+    return render(request, 'journals/profile.html', context)
 
 def register(request):
     if request.method == 'POST':
@@ -46,3 +55,4 @@ def register(request):
         form = UserCreationForm()
     context = {'form': form}
     return render(request, 'registration/register.html', context)
+
