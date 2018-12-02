@@ -1,8 +1,6 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login
-from django.contrib.auth.models import User
-from django.contrib.auth.models import User
 
 from journals.forms import JournalForm
 from journals.models import Journal
@@ -29,16 +27,19 @@ def index(request):
     else:
         return redirect('explore')
 
+
 def explore(request):
     public_journals = Journal.objects.filter(public=True)
     context = {'title': 'Explore', 'public_journals': public_journals}
     return render(request, 'journals/explore.html', context)
+
 
 def profile(request, user_id):
     user_journals = Journal.objects.filter(user=request.user)
 
     context = {'user_journals': user_journals}
     return render(request, 'journals/profile.html', context)
+
 
 def register(request):
     if request.method == 'POST':

@@ -2,7 +2,7 @@ from django.test import TestCase, RequestFactory
 from django.urls import reverse
 from django.contrib.auth.models import User
 
-from journals.views import index, explore
+from journals.views import index, explore, profile
 
 class IndexViewTestCase(TestCase):
 
@@ -29,4 +29,14 @@ class ExploreViewTestCase(TestCase):
     def test_explore_view(self):
         with self.assertTemplateUsed('journals/explore.html'):
             response = self.client.get(reverse('explore'), follow=True)
+            self.assertEqual(response.status_code, 200)
+
+class ProfileViewTestCase(TestCase):
+
+    def setUp(self):
+        self.factory = RequestFactory()
+
+    def test_profile_view(self):
+        with self.assertTemplateUsed('journals/profile.html'):
+            response = self.client.get(reverse('profile', kwargs={'user_id': 1}), follow=True)
             self.assertEqual(response.status_code, 200)

@@ -1,0 +1,49 @@
+{% extends 'journals/base.html' %}
+
+{% block content %}
+
+<input type="radio" name="filter" id="public_radio" value="public">Public<br>
+<input type="radio" name="filter" id="private_radio" value="private">Private<br>
+<input type="radio" name="filter" id="all_radio" value="all">All<br/>
+
+<script type="text/javascript">
+$(document).ready(function () {
+
+
+   $( "#private_radio" ).click(function() {
+        $("#journal_container").empty();
+        {% for journal in user_journals %}
+            {% if journal.public == False %}
+                $("#journal_container").append('<div class="journal_title">{{ journal.title }}</div>')
+            {% endif %}
+        {% endfor %}
+   });
+
+   $( "#public_radio" ).click(function() {
+        $("#journal_container").empty();
+        {% for journal in user_journals %}
+            {% if journal.public == True %}
+                $("#journal_container").append('<div class="journal_title">{{ journal.title }}</div>')
+            {% endif %}
+        {% endfor %}
+   });
+
+   $( "#all_radio" ).click(function() {
+        console.log("all radio clicked")
+        $("#journal_container").empty();
+        {% for journal in user_journals %}
+                $("#journal_container").append('<div class="journal_title">{{ journal.title }}</div>')
+        {% endfor %}
+   });
+
+});
+</script>
+
+
+<div id="journal_container">
+{% for journal in user_journals%}
+    <div class="journal_title">{{ journal.title }}</div>
+{% endfor %}
+</div>
+
+{% endblock %}

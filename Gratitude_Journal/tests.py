@@ -3,12 +3,13 @@ from journals.models import Journal
 from journals.forms import JournalForm
 from django.utils.timezone import now, timedelta
 from django.contrib.auth.models import User
+from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 
 from selenium import webdriver
 from selenium.webdriver.support.ui import Select
 from selenium.webdriver.common.keys import Keys
 
-class UserTestCase(LiveServerTestCase):
+class UserTestCase(StaticLiveServerTestCase):
 
     def setUp(self):
         self.browser = webdriver.Chrome('C:\Program Files (x86)\Google\ChromeDriver\chromedriver.exe')
@@ -77,7 +78,7 @@ class UserTestCase(LiveServerTestCase):
         public_posts = self.browser.find_elements_by_css_selector('.public_post')
         self.assertEqual(len(public_posts), 2)
 
-class UserProfileTestCase(LiveServerTestCase):
+class UserProfileTestCase(StaticLiveServerTestCase):
     def setUp(self):
         self.browser = webdriver.Chrome('C:\Program Files (x86)\Google\ChromeDriver\chromedriver.exe')
         self.browser.implicitly_wait(2)
@@ -128,28 +129,31 @@ class UserProfileTestCase(LiveServerTestCase):
         self.assertEqual(self.browser.current_url, self.live_server_url + '/profile/' + user_id)
 
         user_journals = self.browser.find_elements_by_class_name('journal_title')
+
         self.assertEqual(len(user_journals), 5)
 
         self.browser.find_element_by_xpath("//*[contains(text(), 'journal 2 title')]")
         self.browser.find_element_by_xpath("//*[contains(text(), 'journal 1 title')]")
 
-        #CLICK ON FILTER TO PRIVATE
+        # she clicks on the filter to only see her private journals
         self.browser.find_element_by_id('private_radio').click()
-        user_journals = self.browser.find_elements_by_class('journal_title')
+        user_journals = self.browser.find_elements_by_class_name('journal_title')
         self.assertEqual(len(user_journals), 2)
         self.browser.find_element_by_xpath("//*[contains(text(), 'journal 1 title')]")
         self.browser.find_element_by_xpath("//*[contains(text(), 'journal 3 title')]")
 
-        #CLICK ON FILTER TO PUBLIC
+        # she clicks on the filter to only see her public journals
         self.browser.find_element_by_id('public_radio').click()
-        user_journals = self.browser.find_elements_by_class('journal_title')
+        user_journals = self.browser.find_elements_by_class_name('journal_title')
+
         self.assertEqual(len(user_journals), 3)
         self.browser.find_element_by_xpath("//*[contains(text(), 'journal 2 title')]")
         self.browser.find_element_by_xpath("//*[contains(text(), 'journal 4 title')]")
         self.browser.find_element_by_xpath("//*[contains(text(), 'journal 5 title')]")
 
-        #CLICK ON FILTER TO BOTH
+        # she clicks on the filter to see all of her journals
         self.browser.find_element_by_id('all_radio').click()
+        user_journals = self.browser.find_elements_by_class_name('journal_title')
         self.assertEqual(len(user_journals), 5)
         self.browser.find_element_by_xpath("//*[contains(text(), 'journal 2 title')]")
         self.browser.find_element_by_xpath("//*[contains(text(), 'journal 4 title')]")
@@ -157,11 +161,15 @@ class UserProfileTestCase(LiveServerTestCase):
         self.browser.find_element_by_xpath("//*[contains(text(), 'journal 1 title')]")
         self.browser.find_element_by_xpath("//*[contains(text(), 'journal 3 title')]")
 
+        # she can click a journal title, and be taken to a page that displays that journal.
+
+        self.browser.find_element_by_xpath("//*[contains(text(), 'journal 2 title')]").click()
+
+        clicked_journal_id = str(Journal.objects.get(title='journal 2 title').id)
+
+        self.assertEqual(self.browser.current_url, self.live_server_url + '/journal/' + clicked_journal_id)
 
 
-        # she filters by public and private. AJAX requests handle the filtering.
-
-        # she can click a journal title, and be taken to a pge that displays that journal.
 
         self.fail('incomplete test')
 
@@ -175,7 +183,7 @@ class UserProfileTestCase(LiveServerTestCase):
     #     #user goes to the research (working title) page.
     #     pass
 
-# class UnauthenticatedUserTestCase(LiveServerTestCase):
+# class UnauthenticatedUserTestCase(StaticLiveServerTestCase):
 #
 #     def setUp(self):
 #         self.browser = webdriver.Chrome('C:\Program Files (x86)\Google\ChromeDriver\chromedriver.exe')

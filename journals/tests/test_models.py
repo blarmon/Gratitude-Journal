@@ -15,7 +15,7 @@ class JournalModelTestCase(TestCase):
             public=True
         )
 
-    def test_solo_basic(self):
+    def test_journal_basic(self):
         """
         Test the basic functionality of Solo
         """

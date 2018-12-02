@@ -2,7 +2,7 @@ from django.test import TestCase
 from django.urls import resolve
 from django.contrib.auth.models import User
 
-from journals.views import index, explore
+from journals.views import index, explore, profile
 
 class JournalsURLsTestCase(TestCase):
 
@@ -30,3 +30,11 @@ class  JournalsURLsTestCaseAuthenticated(TestCase):
         """
         root = resolve('/')
         self.assertEqual(root.func, index)
+
+    def test_profile_url_uses_profile_view(self):
+        """
+        Test that the root of the site resolves to the
+        correct view function
+        """
+        root = resolve('/profile/1')
+        self.assertEqual(root.func, profile)
