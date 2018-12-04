@@ -50,9 +50,9 @@ class UserTestCase(StaticLiveServerTestCase):
         register_form.find_element_by_class_name('submit').click()
         self.assertEqual(self.browser.current_url, self.live_server_url + '/')
 
-        self.journal1 = Journal.objects.create(user=User.objects.get(username='functional_test_user'), title='journal 1 title', body='journal 1 body', public=False, date=now()-timedelta(days=-1))
-        self.journal2 = Journal.objects.create(user=User.objects.get(username='functional_test_user'), title='journal 2 title', body='journal 2 body', public=True, date=now()-timedelta(days=-365))
-        self.journal3 = Journal.objects.create(user=User.objects.get(username='functional_test_user'), title='journal 3 title', body='journal 3 body', public=False, date=now()-timedelta(days=-12))
+        self.journal1 = Journal.objects.create(user=User.objects.get(username='functional_test_user'), title='journal 1 title', body='journal 1 body', public=False, date=now()-timedelta(days=1))
+        self.journal2 = Journal.objects.create(user=User.objects.get(username='functional_test_user'), title='journal 2 title', body='journal 2 body', public=True, date=now()-timedelta(days=365))
+        self.journal3 = Journal.objects.create(user=User.objects.get(username='functional_test_user'), title='journal 3 title', body='journal 3 body', public=False, date=now()-timedelta(days=12))
 
         # From here (the index page) she can create a new (rich text) blog post, and see her 3 most recent posts beneath that (including her latest post, on page refresh).
 
@@ -162,23 +162,94 @@ class UserProfileTestCase(StaticLiveServerTestCase):
         self.browser.find_element_by_xpath("//*[contains(text(), 'journal 3 title')]")
 
         # she can click a journal title, and be taken to a page that displays that journal.
+        journal_title = self.browser.find_elements_by_class_name('journal_title')[3]
+        journal_title_text = str(journal_title.text)
+        journal_title.click()
 
-        self.browser.find_element_by_xpath("//*[contains(text(), 'journal 2 title')]").click()
+        clicked_journal_id = str(Journal.objects.get(title=journal_title_text).id)
 
-        clicked_journal_id = str(Journal.objects.get(title='journal 2 title').id)
+        clicked_journal = Journal.objects.get(title=journal_title_text)
 
         self.assertEqual(self.browser.current_url, self.live_server_url + '/journal/' + clicked_journal_id)
 
+        self.browser.find_element_by_xpath("//*[contains(text(), '" + clicked_journal.title + "' )]")
+        self.browser.find_element_by_xpath("//*[contains(text(), '" + clicked_journal.body + "' )]")
+        self.browser.find_element_by_id("journal_date")
+
+class UserProfileTestCase(StaticLiveServerTestCase):
+    def setUp(self):
+        self.browser = webdriver.Chrome('C:\Program Files (x86)\Google\ChromeDriver\chromedriver.exe')
+        self.browser.implicitly_wait(2)
+        User.objects.get_or_create(username='testuser_profile_visited')[0]
+        Journal.objects.create(user=User.objects.get(username='testuser_profile_visited'), title='journal 1 title',
+                               body='journal 1 body', public=True, date=now() - timedelta(days=1))
+        Journal.objects.create(user=User.objects.get(username='testuser_profile_visited'), title='journal 2 title',
+                               body='journal 2 body', public=True, date=now() - timedelta(days=1))
+        Journal.objects.create(user=User.objects.get(username='testuser_profile_visited'), title='journal 3 title',
+                               body='journal 3 body', public=False, date=now() - timedelta(days=1))
+
+    def tearDown(self):
+        self.browser.quit()
+
+    def test_user_explores_another_users_profile(self):
+
+        home_page = self.browser.get(self.live_server_url + '')
+
+        # the user registers an account
+
+        register_button = self.browser.find_element_by_link_text('Register')
+        register_button.click()
+
+        register_form = self.browser.find_element_by_id('user-registration-form')
+        register_form.find_element_by_id('id_username').send_keys('functional_test_user')
+        register_form.find_element_by_id('id_password1').send_keys('user_password')
+        register_form.find_element_by_id('id_password2').send_keys('user_password')
+
+        register_form.find_element_by_class_name('submit').click()
+
+        # They are taken to their home page
+
+        self.assertEqual(self.browser.current_url, self.live_server_url + '/')
+
+        # They click the explore page and see public posts from all users.
+
+        self.browser.find_element_by_link_text('Explore').click()
+        self.assertEqual(self.browser.current_url, self.live_server_url + '/explore/')
+
+        public_journals = self.browser.find_elements_by_class_name('journal_container')
+        self.assertEqual(len(public_journals), 2)
+
+        # They click on a users username and are taken to their profile, where they see all of that users public post titles, as well as that users username at the top (TODO? and maybe a small 100 word blurb)
+
+        public_journal_user = self.browser.find_elements_by_class_name('journal_user')
+        public_journal_user[0].click()
+
+        user_clicked_id = User.objects.get(username='testuser_profile_visited').id
+        self.assertEqual(self.browser.current_url, self.live_server_url + '/profile/' + user_clicked_id)
+
+        journal_one = self.browser.find_element_by_link_text('journal 1 title')
+        journal_one_text = journal_one.text
+        self.browser.find_element_by_link_text('journal 2 title')
+        self.browser.find_element_by_link_text('journal 3 title')
+        self.browser.find_element_by_link_text('journal 4 title')
+
+        # They click on a journal from that user and are taken to the detailed journal page for the clicked journal
+        journal_one.click()
+
+        clicked_journal_id = str(Journal.objects.get(title=journal_one_text).id)
+
+        self.assertEqual(self.browser.current_url, self.live_server_url + '/journal/' + clicked_journal_id)
+
+        clicked_journal = Journal.objects.get(title=journal_one_text)
+
+        detailed_journal_title = self.browser.find_element_by_id('journal_title').text
+        detailed_journal_body = self.browser.find_element_by_id('journal_body').text
+
+        self.assertEqual(clicked_journal.title, detailed_journal_title)
+        self.assertEqual(clicked_journal.body, detailed_journal_body)
 
 
-        self.fail('incomplete test')
 
-
-    # TODO TODO TODO TODO TODO
-    # def test_user_explores_another_users_profile(self):
-    #     #the user will see an archive of another users public posts, order by date. clicking on one will take them to the page to view a single journal.
-    #     pass
-    #
     # def test_user_explores_aboutslashresearch_page(self):
     #     #user goes to the research (working title) page.
     #     pass

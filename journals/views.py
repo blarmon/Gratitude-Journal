@@ -9,7 +9,6 @@ from journals.models import Journal
 # Create your views here.
 def index(request):
     if request.user.is_authenticated:
-
         if request.method == 'POST':
             redirect('index')
             form = JournalForm(request.POST)
@@ -19,7 +18,7 @@ def index(request):
                 instance.save()
                 return redirect('index')
 
-        latest_three_journals = Journal.objects.all().order_by('date')[:3]
+        latest_three_journals = Journal.objects.all().order_by('-date')[:3]
 
         form = JournalForm
         context = {'title': 'Home', 'form': form, 'user_id': request.user.id, 'latest_three_journals': latest_three_journals}
@@ -35,10 +34,16 @@ def explore(request):
 
 
 def profile(request, user_id):
-    user_journals = Journal.objects.filter(user=request.user)
+    user_journals = Journal.objects.filter(user=request.user).order_by('-date')
 
     context = {'user_journals': user_journals}
     return render(request, 'journals/profile.html', context)
+
+def journal_detail(request, journal_id):
+    journal = Journal.objects.get(id=journal_id)
+
+    context = {'journal': journal}
+    return render(request, 'journals/journal_detail.html', context)
 
 
 def register(request):
