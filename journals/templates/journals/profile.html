@@ -2,11 +2,15 @@
 
 {% block content %}
 
-<input type="radio" name="filter" id="public_radio" value="public">Public<br>
-<input type="radio" name="filter" id="private_radio" value="private">Private<br>
-<input type="radio" name="filter" id="all_radio" value="all">All<br/>
+<div id="username">{{ username }}</div>
 
+{% if show_filters %}
+    <input type="radio" name="filter" id="public_radio" value="public">Public<br>
+    <input type="radio" name="filter" id="private_radio" value="private">Private<br>
+    <input type="radio" name="filter" id="all_radio" value="all">All<br/>
+{% endif %}
 <script type="text/javascript">
+
 $(document).ready(function () {
 
 
@@ -14,7 +18,7 @@ $(document).ready(function () {
         $("#journal_container").empty();
         {% for journal in user_journals %}
             {% if journal.public == False %}
-                $("#journal_container").append('<a href="/journal/{{journal.id}}" class="journal_title">{{ journal.title }}</a><span id="journal_date">{{ journal.date }}</span>')
+                $("#journal_container").append('<div><a href="/journal/{{journal.id}}" class="journal_title">{{ journal.title }}</a><span id="journal_date">{{ journal.date }}</span></div>')
             {% endif %}
         {% endfor %}
    });
@@ -23,7 +27,7 @@ $(document).ready(function () {
         $("#journal_container").empty();
         {% for journal in user_journals %}
             {% if journal.public == True %}
-                $("#journal_container").append('<a href="/journal/{{journal.id}}" class="journal_title">{{ journal.title }}</a><span id="journal_date">{{ journal.date }}</span>')
+                $("#journal_container").append('<div><a href="/journal/{{journal.id}}" class="journal_title">{{ journal.title }}</a><span id="journal_date">{{ journal.date }}</span></div>')
             {% endif %}
         {% endfor %}
    });
@@ -31,7 +35,7 @@ $(document).ready(function () {
    $( "#all_radio" ).click(function() {
         $("#journal_container").empty();
         {% for journal in user_journals %}
-                $("#journal_container").append('<a href="/journal/{{journal.id}}" class="journal_title">{{ journal.title }}</a><span id="journal_date">{{ journal.date }}</span>')
+                $("#journal_container").append('<div><a href="/journal/{{journal.id}}" class="journal_title">{{ journal.title }}</a><span id="journal_date">{{ journal.date }}</span></div>')
         {% endfor %}
    });
 
@@ -41,7 +45,7 @@ $(document).ready(function () {
 
 <div id="journal_container">
 {% for journal in user_journals%}
-    <a href="/journal/{{journal.id}}" class="journal_title">{{ journal.title }}</a><span id="journal_date">{{ journal.date }}</span>
+    <div><a href="/journal/{{journal.id}}" class="journal_title">{{ journal.title }}</a><span id="journal_date">{{ journal.date }}</span></div>
 {% endfor %}
 </div>
 

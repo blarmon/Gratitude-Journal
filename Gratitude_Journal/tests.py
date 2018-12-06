@@ -224,8 +224,10 @@ class UserProfileTestCase(StaticLiveServerTestCase):
         public_journal_user = self.browser.find_elements_by_class_name('journal_user')
         public_journal_user[0].click()
 
-        user_clicked_id = User.objects.get(username='testuser_profile_visited').id
+        user_clicked_id = str(User.objects.get(username='testuser_profile_visited').id)
         self.assertEqual(self.browser.current_url, self.live_server_url + '/profile/' + user_clicked_id)
+
+        self.browser.find_element_by_xpath("//*[contains(text(), 'testuser_profile_visited')]")
 
         journal_one = self.browser.find_element_by_link_text('journal 1 title')
         journal_one_text = journal_one.text
@@ -234,6 +236,7 @@ class UserProfileTestCase(StaticLiveServerTestCase):
         self.browser.find_element_by_link_text('journal 4 title')
 
         # They click on a journal from that user and are taken to the detailed journal page for the clicked journal
+
         journal_one.click()
 
         clicked_journal_id = str(Journal.objects.get(title=journal_one_text).id)

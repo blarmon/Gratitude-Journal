@@ -13,6 +13,8 @@ Explore page
 {% endif %}
 
 {% for journal in public_journals %}
+<div class="journal_container"></div>
+<a class="dropdown-item journal_user" id="user_profile" href="{% url 'profile' journal.user.id %}">{{ journal.user.username }}</a>
 <div>{{ journal.title }}</div>
 <div class="public_post">{{ journal.body }}</div>
 {% endfor %}

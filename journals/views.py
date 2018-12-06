@@ -1,6 +1,7 @@
 from django.shortcuts import render, redirect
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login
+from django.contrib.auth.models import User
 
 from journals.forms import JournalForm
 from journals.models import Journal
@@ -34,9 +35,16 @@ def explore(request):
 
 
 def profile(request, user_id):
-    user_journals = Journal.objects.filter(user=request.user).order_by('-date')
+    user_profile = User.objects.get(id=user_id)
+    if user_profile == request.user:
+        show_filters = True
+        user_journals = Journal.objects.filter(user=user_profile).order_by('-date')
+    else:
+        show_filters = False
+        user_journals = Journal.objects.filter(user=user_profile, public = True).order_by('-date')
 
-    context = {'user_journals': user_journals}
+    #TODO remove filters from page if the user viewing the profile is not the currently logged in user.
+    context = {'user_journals': user_journals, 'username': user_profile.username, 'show_filters': show_filters}
     return render(request, 'journals/profile.html', context)
 
 def journal_detail(request, journal_id):
