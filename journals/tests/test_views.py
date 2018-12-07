@@ -37,10 +37,12 @@ class ProfileViewTestCase(TestCase):
 
     def setUp(self):
         self.factory = RequestFactory()
+        self.my_user = User.objects.get_or_create(username='testuser')[0]
 
     def test_profile_view(self):
         with self.assertTemplateUsed('journals/profile.html'):
-            response = self.client.get(reverse('profile', kwargs={'user_id': 1}))
+            user_slug = self.my_user.userextension.slug
+            response = self.client.get(reverse('profile', kwargs={'user_slug': user_slug}))
             self.assertEqual(response.status_code, 200)
 
 class JournalDetailViewTestCase(TestCase):
@@ -53,5 +55,6 @@ class JournalDetailViewTestCase(TestCase):
 
     def test_journal_detail_view(self):
         with self.assertTemplateUsed('journals/journal_detail.html'):
-            response = self.client.get(reverse('journal_detail', kwargs={'journal_id': 1}))
+            journal_slug = self.journal1.slug
+            response = self.client.get(reverse('journal_detail', kwargs={'journal_slug': journal_slug}))
             self.assertEqual(response.status_code, 200)

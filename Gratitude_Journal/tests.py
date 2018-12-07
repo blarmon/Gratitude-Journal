@@ -219,29 +219,27 @@ class UserProfileTestCase(StaticLiveServerTestCase):
         public_journals = self.browser.find_elements_by_class_name('journal_container')
         self.assertEqual(len(public_journals), 2)
 
-        # They click on a users username and are taken to their profile, where they see all of that users public post titles, as well as that users username at the top (TODO? and maybe a small 100 word blurb)
+        # They click on a users username and are taken to their profile, where they see all of that users public post titles, as well as that users username at the top (TODO ? and maybe a small 100 word blurb)
 
         public_journal_user = self.browser.find_elements_by_class_name('journal_user')
         public_journal_user[0].click()
 
-        user_clicked_id = str(User.objects.get(username='testuser_profile_visited').id)
-        self.assertEqual(self.browser.current_url, self.live_server_url + '/profile/' + user_clicked_id)
+        user_clicked_slug = User.objects.get(username='testuser_profile_visited').userextension.slug
+        self.assertEqual(self.browser.current_url, self.live_server_url + '/profile/' + user_clicked_slug)
 
         self.browser.find_element_by_xpath("//*[contains(text(), 'testuser_profile_visited')]")
 
         journal_one = self.browser.find_element_by_link_text('journal 1 title')
         journal_one_text = journal_one.text
         self.browser.find_element_by_link_text('journal 2 title')
-        self.browser.find_element_by_link_text('journal 3 title')
-        self.browser.find_element_by_link_text('journal 4 title')
 
         # They click on a journal from that user and are taken to the detailed journal page for the clicked journal
 
         journal_one.click()
 
-        clicked_journal_id = str(Journal.objects.get(title=journal_one_text).id)
+        clicked_journal_slug = Journal.objects.get(title=journal_one_text).slug
 
-        self.assertEqual(self.browser.current_url, self.live_server_url + '/journal/' + clicked_journal_id)
+        self.assertEqual(self.browser.current_url, self.live_server_url + '/journal/' + clicked_journal_slug)
 
         clicked_journal = Journal.objects.get(title=journal_one_text)
 

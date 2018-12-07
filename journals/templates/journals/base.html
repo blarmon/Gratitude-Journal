@@ -36,7 +36,7 @@
           <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
               {% if user.is_authenticated %}
                 Hello, {{ user.username }}
-                  <a class="dropdown-item" id="user_profile" href="{% url 'profile' user.id %}">Profile</a>
+                  <a class="dropdown-item" id="user_profile" href="{% url 'profile' user.userextension.slug %}">Profile</a>
                   <a class="dropdown-item" href="{% url 'logout' %}">Log out</a>
                   {% else %}
                   <a class="dropdown-item" href="{% url 'login' %}">Log In</a>

@@ -13,7 +13,7 @@ class Journal(models.Model):
     body = models.TextField()
     date = models.DateTimeField(default=now)
     public = models.BooleanField(default=False)
-    slug = AutoSlugField(populate_from=['user__userextension__slug, title'])
+    slug = AutoSlugField(populate_from=['title'])
 
 
 class UserExtension(models.Model):

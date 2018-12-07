@@ -23,3 +23,5 @@ class JournalModelTestCase(TestCase):
         self.assertEqual(self.journal.user, User.objects.get(username='testuser'))
         self.assertEqual(self.journal.body, 'first ever test gratitude journal!')
 
+
+    # TODO test user extension

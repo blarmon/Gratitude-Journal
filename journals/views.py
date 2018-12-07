@@ -4,7 +4,7 @@ from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
 
 from journals.forms import JournalForm
-from journals.models import Journal
+from journals.models import Journal, UserExtension
 
 
 # Create your views here.
@@ -34,21 +34,21 @@ def explore(request):
     return render(request, 'journals/explore.html', context)
 
 
-def profile(request, user_id):
-    user_profile = User.objects.get(id=user_id)
+def profile(request, user_slug):
+    user_profile = User.objects.get(userextension=UserExtension.objects.get(slug=user_slug))
     if user_profile == request.user:
         show_filters = True
         user_journals = Journal.objects.filter(user=user_profile).order_by('-date')
     else:
         show_filters = False
-        user_journals = Journal.objects.filter(user=user_profile, public = True).order_by('-date')
+        user_journals = Journal.objects.filter(user=user_profile, public=True).order_by('-date')
 
     #TODO remove filters from page if the user viewing the profile is not the currently logged in user.
     context = {'user_journals': user_journals, 'username': user_profile.username, 'show_filters': show_filters}
     return render(request, 'journals/profile.html', context)
 
-def journal_detail(request, journal_id):
-    journal = Journal.objects.get(id=journal_id)
+def journal_detail(request, journal_slug):
+    journal = Journal.objects.get(slug=journal_slug)
 
     context = {'journal': journal}
     return render(request, 'journals/journal_detail.html', context)

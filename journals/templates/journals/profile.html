@@ -18,7 +18,7 @@ $(document).ready(function () {
         $("#journal_container").empty();
         {% for journal in user_journals %}
             {% if journal.public == False %}
-                $("#journal_container").append('<div><a href="/journal/{{journal.id}}" class="journal_title">{{ journal.title }}</a><span id="journal_date">{{ journal.date }}</span></div>')
+                $("#journal_container").append('<div><a href="/journal/{{journal.slug}}" class="journal_title">{{ journal.title }}</a><span id="journal_date">{{ journal.date }}</span></div>')
             {% endif %}
         {% endfor %}
    });
@@ -27,7 +27,7 @@ $(document).ready(function () {
         $("#journal_container").empty();
         {% for journal in user_journals %}
             {% if journal.public == True %}
-                $("#journal_container").append('<div><a href="/journal/{{journal.id}}" class="journal_title">{{ journal.title }}</a><span id="journal_date">{{ journal.date }}</span></div>')
+                $("#journal_container").append('<div><a href="/journal/{{journal.slug}}" class="journal_title">{{ journal.title }}</a><span id="journal_date">{{ journal.date }}</span></div>')
             {% endif %}
         {% endfor %}
    });
@@ -35,7 +35,7 @@ $(document).ready(function () {
    $( "#all_radio" ).click(function() {
         $("#journal_container").empty();
         {% for journal in user_journals %}
-                $("#journal_container").append('<div><a href="/journal/{{journal.id}}" class="journal_title">{{ journal.title }}</a><span id="journal_date">{{ journal.date }}</span></div>')
+                $("#journal_container").append('<div><a href="/journal/{{journal.slug}}" class="journal_title">{{ journal.title }}</a><span id="journal_date">{{ journal.date }}</span></div>')
         {% endfor %}
    });
 
@@ -45,7 +45,7 @@ $(document).ready(function () {
 
 <div id="journal_container">
 {% for journal in user_journals%}
-    <div><a href="/journal/{{journal.id}}" class="journal_title">{{ journal.title }}</a><span id="journal_date">{{ journal.date }}</span></div>
+    <div><a href="/journal/{{journal.slug}}" class="journal_title">{{ journal.title }}</a><span id="journal_date">{{ journal.date }}</span></div>
 {% endfor %}
 </div>
 

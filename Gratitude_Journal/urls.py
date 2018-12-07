@@ -21,8 +21,8 @@ from journals import views
 
 urlpatterns = [
     path('', views.index, name='index'),
-    path('profile/<user_id>', views.profile, name='profile'),
-    path('journal/<journal_id>', views.journal_detail, name='journal_detail'),
+    path('profile/<user_slug>', views.profile, name='profile'),
+    path('journal/<journal_slug>', views.journal_detail, name='journal_detail'),
     path('explore/', views.explore, name='explore'),
     path('accounts/', include('django.contrib.auth.urls')),
     path('accounts/register', views.register, name='register'),
