@@ -4,6 +4,7 @@ from django.utils.timezone import now
 from django_extensions.db.fields import AutoSlugField
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from taggit.managers import TaggableManager
 
 # Create your models here.
 #TODO TODO TODO create unique slugs for users!!!
@@ -14,6 +15,7 @@ class Journal(models.Model):
     date = models.DateTimeField(default=now)
     public = models.BooleanField(default=False)
     slug = AutoSlugField(populate_from=['title'])
+    tags = TaggableManager()
 
 
 class UserExtension(models.Model):

@@ -38,6 +38,8 @@ INSTALLED_APPS = [
     'django.contrib.messages',
     'django.contrib.staticfiles',
     'journals',
+    'taggit',
+    'django.contrib.postgres',
 ]
 
 MIDDLEWARE = [
@@ -126,3 +128,5 @@ STATIC_URL = '/static/'
 
 LOGIN_REDIRECT_URL = '/'
 LOGOUT_REDIRECT_URL = '/'
+
+TAGGIT_CASE_INSENSITIVE = True

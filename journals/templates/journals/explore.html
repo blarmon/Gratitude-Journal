@@ -10,11 +10,32 @@ Explore page
 <a href="{% url 'register'%}">Register</a>
 {% endif %}
 
+<form method='get' action="{% url 'explore'%}">
+    <input type="text" name="search_term" id="search_box">
+    <input type="submit" id="submit_button" value="submit">
+</form>
+
+{% if search_term %}
+<h3>Search Results for search term: {{search_term }}</h3>
+<h5>Journals:</h5>
+{% for journal in journal_search_results %}
+<div class="journal_search_result">{{ journal.title }} {{ journal.body }}</div>
+{% endfor %}
+
+<h5>Users:</h5>
+{% for user in user_search_results %}
+<div>{{ user.username }}</div>
+{% endfor %}
+
+{% else %}
+<h3>Latest Journals</h3>
 {% for journal in public_journals %}
 <div class="journal_container"></div>
 <a class="journal_user" id="user_profile" href="{% url 'profile' journal.user.userextension.slug %}">{{ journal.user.username }}</a>
 <div>{{ journal.title }}</div>
 <div class="public_post">{{ journal.body }}</div>
 {% endfor %}
+
+{% endif %}
 
 {% endblock %}

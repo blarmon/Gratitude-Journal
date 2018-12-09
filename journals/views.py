@@ -2,6 +2,8 @@ from django.shortcuts import render, redirect
 from django.contrib.auth.forms import UserCreationForm
 from django.contrib.auth import authenticate, login
 from django.contrib.auth.models import User
+from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
+from django.db.models import Q
 
 from journals.forms import JournalForm
 from journals.models import Journal, UserExtension
@@ -29,8 +31,25 @@ def index(request):
 
 
 def explore(request):
-    public_journals = Journal.objects.filter(public=True)
-    context = {'title': 'Explore', 'public_journals': public_journals}
+    context = {}
+
+    if 'search_term' in request.GET:
+        query = SearchQuery(request.GET['search_term'])
+
+        vector = SearchVector('body') + SearchVector('title') + SearchVector('tags__name')
+
+        journal_search_results = Journal.objects.annotate(rank=SearchRank(vector, query)).order_by('rank').distinct().filter(public=True)
+
+        search_term = (request.GET['search_term'])
+
+        journal_search_results = Journal.objects.filter(Q(title__icontains=search_term) | Q(body__icontains=search_term) | Q(tags__name__icontains=search_term)).filter(public=True).distinct()
+
+
+        context.update({'search_term': request.GET['search_term'], 'journal_search_results': journal_search_results})
+
+
+    public_journals = Journal.objects.filter(public=True).order_by('-date')[:3]
+    context.update({'title': 'Explore', 'public_journals': public_journals})
     return render(request, 'journals/explore.html', context)
 
 

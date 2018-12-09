@@ -249,6 +249,138 @@ class UserProfileTestCase(StaticLiveServerTestCase):
         self.assertEqual(clicked_journal.title, detailed_journal_title)
         self.assertEqual(clicked_journal.body, detailed_journal_body)
 
+class UserTestsSearchFunction(StaticLiveServerTestCase):
+    def setUp(self):
+        self.browser = webdriver.Chrome('C:\Program Files (x86)\Google\ChromeDriver\chromedriver.exe')
+        self.browser.implicitly_wait(2)
+        User.objects.get_or_create(username='testuser_1')[0]
+        User.objects.get_or_create(username='testuser_2')[0]
+        User.objects.get_or_create(username='testuser_3')[0]
+
+        self.journal1 = Journal.objects.create(user=User.objects.get(username='testuser_1'), title='dog cheese bicycle',
+                               body='this is a random post body', public=True, date=now() - timedelta(days=1))
+        self.journal1.tags.add('receipt', 'fizz', 'shoe', 'yawn', 'decorate', 'innate')
+
+        self.journal2 = Journal.objects.create(user=User.objects.get(username='testuser_1'), title='dog cheese bicycle',
+                               body='this is a random post body', public=False, date=now() - timedelta(days=1))
+        self.journal2.tags.add('receipt', 'fizz', 'shoe', 'yawn', 'decorate', 'innate')
+
+        self.journal3 = Journal.objects.create(user=User.objects.get(username='testuser_1'), title='vegetable kitty baseball bat',
+                               body='this is a post about my baby boy kevin. he is the cutest baby boy and I am so '
+                                    'proud of him.', public=False, date=now() - timedelta(days=1))
+        self.journal3.tags.add('disease,' 'sofa', 'leather', 'hew', 'snow', 'flat')
+
+        self.journal4 = Journal.objects.create(user=User.objects.get(username='testuser_2'), title='better title for my post.',
+                               body='PosT wIth wEIRd randOM caPITaLizaTIon', public=True, date=now() - timedelta(days=1))
+        self.journal4.tags.add('apple', 'survive', 'railway', 'surmise', 'anxious', 'bomb')
+
+        self.journal5 = Journal.objects.create(user=User.objects.get(username='testuser_2'), title='user 2 journal 2 title',
+                               body='post$$$$ wi65@$th s%#$ome rando##2m cr*8*azy s8y8m8b*o(((ls.', public=True,
+                                    date=now() - timedelta(days=1))
+        self.journal5.tags.add('terrify', 'shoe', 'omit', 'signal', 'flight', 'advertisement', 'equable')
+
+        self.journal6 = Journal.objects.create(user=User.objects.get(username='testuser_2'), title='user 2 journal 3 title',
+                               body='undertale is a sweet game, but I really don\'t understand the comparisons to earth'
+                                    'bound honestly.  it pays homage, and they\'re both RPGs, but beyond that who knows'
+                                    '.', public=False, date=now() - timedelta(days=1))
+        self.journal6.tags.add('consist', 'stem', 'neck', 'null', 'fax', 'versed')
+
+        self.journal7 = Journal.objects.create(user=User.objects.get(username='testuser_3'), title='user 3\'s gratitude journal for today',
+                               body='this is a journal about things that I\'m thankful for, such as fish, indoor '
+                                    'plumbing, coffee, my friends, jiu jitsu, yoga, etc.',
+                               public=True, date=now() - timedelta(days=1))
+        self.journal7.tags.add('voracious', 'become', 'animate', 'axiomatic', 'preset', 'shoe', 'impossible')
+
+        self.journal8 = Journal.objects.create(user=User.objects.get(username='testuser_3'), title='need to be able to search my title too',
+                               body='today i went to the mall.  i\'m so grateful that i can go to the mall wow',
+                               public=True, date=now() - timedelta(days=1))
+        self.journal8.tags.add('hysterical', 'meek', 'roll', 'profuse', 'resolve', 'toes', 'shoe')
+
+        self.journal9 = Journal.objects.create(user=User.objects.get(username='testuser_3'), title='todays gratitude post.',
+                               body='i hope my knee gets better soon.  i need to add something here for users to look '
+                                    'at a retrospective fo their posts.  the wordcloud is honestly not a bad idea, tbh.'
+                                    '  i just have no clue how performant that library is.', public=True,
+                               date=now() - timedelta(days=1))
+        self.journal9.tags.add('naive', 'husky', 'fly', 'tight', 'attack', 'flowers')
+
+
+    def tearDown(self):
+        self.browser.quit()
+
+    def test_user_searches_public_journals(self):
+        # the user searches against the body and title of gratitude journals, as well as against tags.  tags are
+        # weighted more heavily than title and body when the user finds the journal they want they have the option
+        # to go to the authors profile, or to go directly to the details page for the journal.
+        # The user will also search for other users, and upon finding them can click their name to be taken
+        # to that users profile page.
+
+        home_page = self.browser.get(self.live_server_url + '')
+
+        # Because she doesn't have an account, she is redirected to an "explore page", which allows her to search
+        # other peoples' journals by title or tag, and displays a few select recent journals.  Because she is not
+        #  logged in, she sees a quick explanation of the site at the top,  as well as buttons
+        #  to log in or sign up.  She chooses to sign up for a new account, so she clicks the "Register" button.
+
+        self.assertEqual(self.browser.current_url, self.live_server_url + '/explore/')
+        self.assertEqual(self.browser.title, 'Explore')
+
+        log_in_button = self.browser.find_element_by_link_text('Log In')
+        register_button = self.browser.find_element_by_link_text('Register')
+        register_button.click()
+
+        # After entering her username, password, and email, she is redirected to her home page.
+
+        register_form = self.browser.find_element_by_id('user-registration-form')
+        register_form.find_element_by_id('id_username').send_keys('functional_test_user')
+        register_form.find_element_by_id('id_password1').send_keys('user_password')
+        register_form.find_element_by_id('id_password2').send_keys('user_password')
+
+        register_form.find_element_by_class_name('submit').click()
+        self.assertEqual(self.browser.current_url, self.live_server_url + '/')
+
+        # She goes to the explore page to see other users' journals
+
+        self.browser.find_element_by_link_text('Explore').click()
+        self.assertEqual(self.browser.current_url, self.live_server_url + '/explore/')
+
+
+        # On the explore page the user finds the "journal search".  She enters a few keywords she is looking for and
+        # sees related public journal posts from other users
+
+        self.browser.find_element_by_id('search_box').send_keys('knee')
+        self.browser.find_element_by_id('submit_button').click()
+        search_results = self.browser.find_elements_by_class_name('journal_search_result')
+        self.assertEqual(len(search_results), 1)
+        self.browser.find_element_by_xpath("//*[contains(text(), 'todays gratitude post.' )]")
+        self.browser.find_element_by_xpath("//*[contains(text(), 'gets better soon' )]")
+
+        self.browser.find_element_by_id('search_box').send_keys('fizz')
+        self.browser.find_element_by_id('submit_button').click()
+        search_results = self.browser.find_elements_by_class_name('journal_search_result')
+        self.assertEqual(len(search_results), 1)
+        self.browser.find_element_by_xpath("//*[contains(text(), 'dog cheese bicycle' )]")
+        self.browser.find_element_by_xpath("//*[contains(text(), 'random post' )]")
+
+        self.browser.find_element_by_id('search_box').send_keys('shoe')
+        self.browser.find_element_by_id('submit_button').click()
+        search_results = self.browser.find_elements_by_class_name('journal_search_result')
+        self.assertEqual(len(search_results), 4)
+        self.browser.find_element_by_xpath("//*[contains(text(), 'dog cheese bicycle' )]")
+        self.browser.find_element_by_xpath("//*[contains(text(), 'cr*8*azy' )]")
+        self.browser.find_element_by_xpath("//*[contains(text(), 'journal for today' )]")
+        self.browser.find_element_by_xpath("//*[contains(text(), 'went to the mall' )]")
+
+        # TODO look for user results as well
+
+        # search for words from title and body
+
+
+        self.fail('incomplete test')
+
+#TODO ADD A TEST FOR USER COMMENTS ON OTHERS' JOURNALS
+
+
+# CLASS USER SHARES TO SOCIAL MEDIA
 
 
     # def test_user_explores_aboutslashresearch_page(self):
