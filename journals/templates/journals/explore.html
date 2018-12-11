@@ -12,19 +12,20 @@ Explore page
 
 <form method='get' action="{% url 'explore'%}">
     <input type="text" name="search_term" id="search_box">
-    <input type="submit" id="submit_button" value="submit">
+    <input type="submit" id="submit_button" value="Search">
 </form>
 
 {% if search_term %}
 <h3>Search Results for search term: {{search_term }}</h3>
 <h5>Journals:</h5>
+<!-- TODO Display the first 100 or so words of the body! -->
 {% for journal in journal_search_results %}
-<div class="journal_search_result">{{ journal.title }} {{ journal.body }}</div>
+<div class="journal_search_result"><div><a href="{% url 'journal_detail' journal.slug %}">{{ journal.title }}</a>{{ journal.date }}</div></div>
 {% endfor %}
 
 <h5>Users:</h5>
 {% for user in user_search_results %}
-<div>{{ user.username }}</div>
+<div class="user_search_result"><div><a href="{% url 'profile' user.userextension.slug %}">{{ user.username }}</a></div></div>
 {% endfor %}
 
 {% else %}
@@ -32,8 +33,8 @@ Explore page
 {% for journal in public_journals %}
 <div class="journal_container"></div>
 <a class="journal_user" id="user_profile" href="{% url 'profile' journal.user.userextension.slug %}">{{ journal.user.username }}</a>
-<div>{{ journal.title }}</div>
-<div class="public_post">{{ journal.body }}</div>
+<div class="public_post"><a href="{% url 'journal_detail' journal.slug %}">{{ journal.title }}</div>
+<br>
 {% endfor %}
 
 {% endif %}

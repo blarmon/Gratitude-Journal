@@ -4,6 +4,7 @@ from journals.forms import JournalForm
 from django.utils.timezone import now, timedelta
 from django.contrib.auth.models import User
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
+from django.db.models import Count
 
 from selenium import webdriver
 from selenium.webdriver.support.ui import Select
@@ -68,7 +69,6 @@ class UserTestCase(StaticLiveServerTestCase):
         self.assertEqual(len(recent_posts), 3)
 
         self.assertEqual(len(self.browser.find_elements_by_xpath("//*[contains(text(), 'journal 1 title')]")), 1)
-        self.assertEqual(len(self.browser.find_elements_by_xpath("//*[contains(text(), 'My Post Body')]")), 1)
 
         # She also can see her latest post on the explore page now, as well as her other public journals.
 
@@ -351,36 +351,113 @@ class UserTestsSearchFunction(StaticLiveServerTestCase):
         self.browser.find_element_by_id('submit_button').click()
         search_results = self.browser.find_elements_by_class_name('journal_search_result')
         self.assertEqual(len(search_results), 1)
-        self.browser.find_element_by_xpath("//*[contains(text(), 'todays gratitude post.' )]")
+        journal_to_click = self.browser.find_element_by_xpath("//*[contains(text(), 'todays gratitude post.' )]")
+        journal_to_click.click()
+        self.assertEqual(self.browser.current_url, self.live_server_url + '/journal/todays-gratitude-post')
         self.browser.find_element_by_xpath("//*[contains(text(), 'gets better soon' )]")
+        self.browser.back()
 
         self.browser.find_element_by_id('search_box').send_keys('fizz')
         self.browser.find_element_by_id('submit_button').click()
         search_results = self.browser.find_elements_by_class_name('journal_search_result')
         self.assertEqual(len(search_results), 1)
         self.browser.find_element_by_xpath("//*[contains(text(), 'dog cheese bicycle' )]")
-        self.browser.find_element_by_xpath("//*[contains(text(), 'random post' )]")
 
         self.browser.find_element_by_id('search_box').send_keys('shoe')
         self.browser.find_element_by_id('submit_button').click()
         search_results = self.browser.find_elements_by_class_name('journal_search_result')
         self.assertEqual(len(search_results), 4)
         self.browser.find_element_by_xpath("//*[contains(text(), 'dog cheese bicycle' )]")
-        self.browser.find_element_by_xpath("//*[contains(text(), 'cr*8*azy' )]")
-        self.browser.find_element_by_xpath("//*[contains(text(), 'journal for today' )]")
-        self.browser.find_element_by_xpath("//*[contains(text(), 'went to the mall' )]")
+        self.browser.find_element_by_xpath("//*[contains(text(), 'user 2 journal 2 title' )]")
 
-        # TODO look for user results as well
+        # now the user will search for other users and check out their public posts on their profile
 
-        # search for words from title and body
+        self.browser.find_element_by_id('search_box').send_keys('testuser')
+        self.browser.find_element_by_id('submit_button').click()
+        search_results = self.browser.find_elements_by_class_name('user_search_result')
+        self.assertEqual(len(search_results), 3)
+        self.browser.find_element_by_link_text('testuser_1').click()
+        self.assertEqual(self.browser.current_url, self.live_server_url + '/profile/testuser_1')
+
+# TODO ADD A TEST FOR USER COMMENTS ON OTHERS' JOURNALS.  MAYBE.  Maybe anonymity isn't good for a positive vibe?
+
+# TODO, add a follow button.  maybe don't share follower counts (except to the user themselves) and the link, but use it to weight searches?
+# TODO Followed users will then show up on ones profiles.
+# TODO The site certainly does not need to be a popularity contest, but people do have good content to share.
+
+class UserTestsFollowersFunction(StaticLiveServerTestCase):
+
+    def setUp(self):
+        self.browser = webdriver.Chrome('C:\Program Files (x86)\Google\ChromeDriver\chromedriver.exe')
+        self.browser.implicitly_wait(2)
+
+    def tearDown(self):
+        self.browser.quit()
+
+    def test_user_tests_followers(self):
+
+        # The user tests the followers function to see be able to see other user's latest journals.  He follows his
+        # friend's profile, and from then will see his friends account and latest journal appear under "Following"
+        # on his own profile.  His friend then logs in and can see in his follower list that bill or whatever
+        # is now following him.  He can click on Bill's account from this list.  There is also maybe a followers feed?
+        # idk. tht honestly might require a redesign to work correctly... how social do we want this thing to be?
+
+        User.objects.get_or_create(username='testuser_profile_visited')[0]
+        Journal.objects.create(user=User.objects.get(username='testuser_profile_visited'), title='journal 1 title',
+                               body='journal 1 body', public=True, date=now() - timedelta(days=1))
+
+        home_page = self.browser.get(self.live_server_url + '')
+
+        # Because she doesn't have an account, she is redirected to an "explore page", which allows her to search
+        # other peoples' journals by title or tag, and displays a few select recent journals.  Because she is not
+        #  logged in, she sees a quick explanation of the site at the top,  as well as buttons
+        #  to log in or sign up.  She chooses to sign up for a new account, so she clicks the "Register" button.
+
+        self.assertEqual(self.browser.current_url, self.live_server_url + '/explore/')
+        self.assertEqual(self.browser.title, 'Explore')
+
+        log_in_button = self.browser.find_element_by_link_text('Log In')
+        register_button = self.browser.find_element_by_link_text('Register')
+        register_button.click()
+
+        # After entering her username, password, and email, she is redirected to her home page.
+
+        register_form = self.browser.find_element_by_id('user-registration-form')
+        register_form.find_element_by_id('id_username').send_keys('functional_test_user')
+        register_form.find_element_by_id('id_password1').send_keys('user_password')
+        register_form.find_element_by_id('id_password2').send_keys('user_password')
+
+        register_form.find_element_by_class_name('submit').click()
+        self.assertEqual(self.browser.current_url, self.live_server_url + '/')
+
+        self.browser.find_element_by_link_text('Explore').click()
+        self.browser.find_element_by_link_text('testuser_profile_visited').click()
+
+        self.browser.find_element_by_xpath("//*[contains(text(), 'Follow' )]").click()
+        self.assertEqual(User.objects.filter(username='testuser_profile_visited').annotate(Count('followed_by')), 1)
+
+        self.browser.find_element_by_xpath("//*[contains(text(), 'Follow' )]").click()
+        self.assertEqual(User.objects.filter(username='testuser_profile_visited').annotate(Count('followed_by')), 0)
+
+        self.browser.find_element_by_xpath("//*[contains(text(), 'Follow' )]").click()
+
+        self.browser.find_element_by_link_text('Feed').click()
+
+        #CHECK TO SEE IF JOURNAL 1 IS HERE
 
 
+
+        import pdb; pdb.set_trace()
         self.fail('incomplete test')
 
-#TODO ADD A TEST FOR USER COMMENTS ON OTHERS' JOURNALS
+
+
+
+# USER PUBLICIZES OR PRIVATIZES A JOURNAL
 
 
 # CLASS USER SHARES TO SOCIAL MEDIA
+    # TODO maye not...  is that really a good idea...?
 
 
     # def test_user_explores_aboutslashresearch_page(self):

@@ -7,7 +7,6 @@ from django.dispatch import receiver
 from taggit.managers import TaggableManager
 
 # Create your models here.
-#TODO TODO TODO create unique slugs for users!!!
 class Journal(models.Model):
     user = models.ForeignKey(User, on_delete=models.CASCADE)
     title = models.CharField(max_length=150)
@@ -15,7 +14,7 @@ class Journal(models.Model):
     date = models.DateTimeField(default=now)
     public = models.BooleanField(default=False)
     slug = AutoSlugField(populate_from=['title'])
-    tags = TaggableManager()
+    tags = TaggableManager(blank=True)
 
 
 class UserExtension(models.Model):
@@ -30,3 +29,10 @@ def create_user_extension(sender, instance, created, **kwargs):
 @receiver(post_save, sender=User)
 def save_user_extension(sender, instance, **kwargs):
     instance.userextension.save()
+
+
+# TODO helper function to return a blurb from the body of a journal.
+# TODO maybe overwrite the save function to do this!  thats a pretty good idea...
+# TODO make sure to write the test for the function before you start!!!
+# TODO is there a way to base the blurb off of screen size?  probably not.  responsive
+# TODO columns should be enough...

@@ -19,11 +19,13 @@ def index(request):
                 instance = form.save(commit=False)
                 instance.user = request.user
                 instance.save()
+                form.save_m2m()
                 return redirect('index')
 
-        latest_three_journals = Journal.objects.all().order_by('-date')[:3]
+        latest_three_journals = Journal.objects.filter(user=request.user).order_by('-date')[:3]
 
         form = JournalForm
+
         context = {'title': 'Home', 'form': form, 'user_id': request.user.id, 'latest_three_journals': latest_three_journals}
         return render(request, 'journals/index.html', context)
     else:
@@ -34,18 +36,11 @@ def explore(request):
     context = {}
 
     if 'search_term' in request.GET:
-        query = SearchQuery(request.GET['search_term'])
-
-        vector = SearchVector('body') + SearchVector('title') + SearchVector('tags__name')
-
-        journal_search_results = Journal.objects.annotate(rank=SearchRank(vector, query)).order_by('rank').distinct().filter(public=True)
-
         search_term = (request.GET['search_term'])
-
         journal_search_results = Journal.objects.filter(Q(title__icontains=search_term) | Q(body__icontains=search_term) | Q(tags__name__icontains=search_term)).filter(public=True).distinct()
+        user_search_results = User.objects.filter(username__icontains=search_term).distinct()
 
-
-        context.update({'search_term': request.GET['search_term'], 'journal_search_results': journal_search_results})
+        context.update({'search_term': request.GET['search_term'], 'journal_search_results': journal_search_results, 'user_search_results': user_search_results})
 
 
     public_journals = Journal.objects.filter(public=True).order_by('-date')[:3]
@@ -62,7 +57,6 @@ def profile(request, user_slug):
         show_filters = False
         user_journals = Journal.objects.filter(user=user_profile, public=True).order_by('-date')
 
-    #TODO remove filters from page if the user viewing the profile is not the currently logged in user.
     context = {'user_journals': user_journals, 'username': user_profile.username, 'show_filters': show_filters}
     return render(request, 'journals/profile.html', context)
 
@@ -88,4 +82,3 @@ def register(request):
         form = UserCreationForm()
     context = {'form': form}
     return render(request, 'registration/register.html', context)
-

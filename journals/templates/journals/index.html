@@ -2,7 +2,6 @@
 
 {% block content %}
 
-<a href="{% url 'explore' %}">Explore</a>
 index
 
 {% if user.is_authenticated %}
@@ -25,18 +24,18 @@ index
         {% endfor %}
     {% endif %}
     <!--Display my forms fields-->
-    <div>{{ form.title.label_tag }}</div>
-    <div>{{ form.title }}{{ form.public.label_tag }}{{ form.public }}</div>
-    {{ form.body.label_tag }}
-    <div>{{ form.body }}</div>
-    <div>{{ form.tags.label_tag }}</div>
-    <div>{{ form.tags }}</div>
+    {% for field in form %}
+        <div>
+            {{ field.label_tag }}
+            {{ field }}
+        </div>
+    {% endfor %}
     <div><input type="submit" value="Submit" id="submit"></div>
 </form>
-
+ <h4>My latest posts:</h4>
 {% for journal in latest_three_journals %}
-<div>{{ journal.title }}</div>
-<div class="recent_post">{{ journal.body }}</div>
+<div class="recent_post"><a href="{% url 'journal_detail' journal.slug %}">{{ journal.title }}</a>{{ journal.date }}</div>
+<br>
 {% endfor %}
 
 {% endif %}
