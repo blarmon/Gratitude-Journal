@@ -31,9 +31,10 @@ Explore page
 {% else %}
 <h3>Latest Journals</h3>
 {% for journal in public_journals %}
-<div class="journal_container"></div>
+<div class="journal_container">
 <a class="journal_user" id="user_profile" href="{% url 'profile' journal.user.userextension.slug %}">{{ journal.user.username }}</a>
-<div class="public_post"><a href="{% url 'journal_detail' journal.slug %}">{{ journal.title }}</div>
+<div class="public_post"><a href="{% url 'journal_detail' journal.slug %}">{{ journal.title }}</a></div>
+</div>
 <br>
 {% endfor %}
 

@@ -1,10 +1,11 @@
 from django.test import LiveServerTestCase
-from journals.models import Journal
+from journals.models import Journal, UserExtension
 from journals.forms import JournalForm
 from django.utils.timezone import now, timedelta
 from django.contrib.auth.models import User
 from django.contrib.staticfiles.testing import StaticLiveServerTestCase
 from django.db.models import Count
+import time
 
 from selenium import webdriver
 from selenium.webdriver.support.ui import Select
@@ -390,6 +391,20 @@ class UserTestsFollowersFunction(StaticLiveServerTestCase):
     def setUp(self):
         self.browser = webdriver.Chrome('C:\Program Files (x86)\Google\ChromeDriver\chromedriver.exe')
         self.browser.implicitly_wait(2)
+        User.objects.get_or_create(username='testuser_followed1')[0]
+        User.objects.get_or_create(username='testuser_followed2')[0]
+        Journal.objects.create(user=User.objects.get(username='testuser_followed1'), title='user 1 journal 1 title',
+                               body='journal 1 body', public=True, date=now() - timedelta(days=1))
+        Journal.objects.create(user=User.objects.get(username='testuser_followed1'), title='user 1 journal 2 title',
+                               body='journal 2 body', public=True, date=now() - timedelta(days=100))
+        Journal.objects.create(user=User.objects.get(username='testuser_followed2'), title='user 2 journal 1 title',
+                               body='journal 3 body', public=True, date=now() - timedelta(days=50))
+        Journal.objects.create(user=User.objects.get(username='testuser_followed2'), title='user 2 journal 2 title',
+                               body='journal 4 body', public=True, date=now() - timedelta(days=75))
+        Journal.objects.create(user=User.objects.get(username='testuser_followed2'), title='user 2 journal 3 title',
+                               body='journal 5 body', public=True, date=now() - timedelta(days=200))
+        Journal.objects.create(user=User.objects.get(username='testuser_followed2'), title='user 2 journal 4 title',
+                               body='journal 5 body', public=False, date=now() - timedelta(days=200))
 
     def tearDown(self):
         self.browser.quit()
@@ -402,9 +417,6 @@ class UserTestsFollowersFunction(StaticLiveServerTestCase):
         # is now following him.  He can click on Bill's account from this list.  There is also maybe a followers feed?
         # idk. tht honestly might require a redesign to work correctly... how social do we want this thing to be?
 
-        User.objects.get_or_create(username='testuser_profile_visited')[0]
-        Journal.objects.create(user=User.objects.get(username='testuser_profile_visited'), title='journal 1 title',
-                               body='journal 1 body', public=True, date=now() - timedelta(days=1))
 
         home_page = self.browser.get(self.live_server_url + '')
 
@@ -431,24 +443,31 @@ class UserTestsFollowersFunction(StaticLiveServerTestCase):
         self.assertEqual(self.browser.current_url, self.live_server_url + '/')
 
         self.browser.find_element_by_link_text('Explore').click()
-        self.browser.find_element_by_link_text('testuser_profile_visited').click()
+        self.browser.find_element_by_link_text('testuser_followed1').click()
+        self.browser.find_element_by_class_name('follow-button').click()
+        time.sleep(1)
+        self.browser.find_element_by_class_name('unfollow-button').click()
+        time.sleep(1)
+        self.browser.find_element_by_class_name('follow-button').click()
 
-        self.browser.find_element_by_xpath("//*[contains(text(), 'Follow' )]").click()
-        self.assertEqual(User.objects.filter(username='testuser_profile_visited').annotate(Count('followed_by')), 1)
-
-        self.browser.find_element_by_xpath("//*[contains(text(), 'Follow' )]").click()
-        self.assertEqual(User.objects.filter(username='testuser_profile_visited').annotate(Count('followed_by')), 0)
-
-        self.browser.find_element_by_xpath("//*[contains(text(), 'Follow' )]").click()
-
+        self.browser.find_element_by_link_text('Explore').click()
+        self.browser.find_element_by_link_text('testuser_followed2').click()
+        self.browser.find_element_by_class_name('follow-button').click()
+        time.sleep(1)
         self.browser.find_element_by_link_text('Feed').click()
 
-        #CHECK TO SEE IF JOURNAL 1 IS HERE
+        # we see top 20 latest public journals from that user in our newsfeed in order by date
+        self.assertEqual(self.browser.current_url, self.live_server_url + '/feed/')
+        journals = self.browser.find_elements_by_class_name('journal_container')
+        self.assertEqual(len(journals), 5)
+        self.assertEqual(journals[0].find_element_by_class_name('public_post').text, 'user 1 journal 1 title')
+        self.assertEqual(journals[2].find_element_by_class_name('public_post').text, 'user 2 journal 2 title')
+        self.assertEqual(journals[4].find_element_by_class_name('public_post').text, 'user 2 journal 3 title')
 
-
-
-        import pdb; pdb.set_trace()
         self.fail('incomplete test')
+        # we go back and unfollow one user
+
+        # go back to feed and now see only the other users posts
 
 
 

@@ -30,6 +30,9 @@
         <span>
             <a href="{% url 'index' %}"> Home&nbsp;</a>|
             <a href="{% url 'explore' %}">Explore&nbsp;</a>|
+            {% if user.is_authenticated %}
+            <a href="{% url 'feed' %}">Feed&nbsp;</a>|
+            {% endif %}
             <span class="dropdown">
           <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
             Dropdown button

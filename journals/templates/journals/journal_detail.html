@@ -1,3 +1,7 @@
+{% extends 'journals/base.html' %}
+
+{% block content %}
+
 <div id="journal_user"><a href="{% url 'profile' journal.user.userextension.slug %}">{{ journal.user.username }}</a></div>
 <div id="journal_date">{{ journal.date }}</div>
 <div id="journal_title">{{ journal.title }}</div>
@@ -7,3 +11,5 @@
 {% for tag in journal.tags.all %}
 <div class="journal_tag">{{ tag }}</div>
 {% endfor %}
+
+{% endblock %}
