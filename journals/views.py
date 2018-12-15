@@ -37,7 +37,7 @@ def explore(request):
         journal_search_results = Journal.objects.filter(Q(title__icontains=search_term) | Q(body__icontains=search_term) | Q(tags__name__icontains=search_term)).filter(public=True).distinct()
         user_search_results = User.objects.filter(username__icontains=search_term).distinct()
         context.update({'search_term': request.GET['search_term'], 'journal_search_results': journal_search_results, 'user_search_results': user_search_results})
-    public_journals = Journal.objects.filter(public=True).order_by('-date')[:3]
+    public_journals = Journal.objects.filter(public=True).order_by('-date')[:10]
     context.update({'title': 'Explore', 'public_journals': public_journals})
     return render(request, 'journals/explore.html', context)
 

@@ -1,46 +1,56 @@
 {% extends 'journals/base.html' %}
 
 {% block content %}
+<div class="row">
+    {% if not user.is_authenticated %}
 
-Explore page
-{% if user.is_authenticated %}
-    {{ user.username }}
-{% else %}
-<a href="{% url 'login'%}">Log In</a>&nbsp;|
-<a href="{% url 'register'%}">Register</a>
-{% endif %}
-
-<form method='get' action="{% url 'explore'%}">
-    <input type="text" name="search_term" id="search_box">
-    <input type="submit" id="submit_button" value="Search">
-</form>
-
-{% if search_term %}
-<h3>Search Results for search term: {{search_term }}</h3>
-<h5>Journals:</h5>
-<!-- TODO Display the first 100 or so words of the body! -->
-{% for journal in journal_search_results %}
-    <div class="journal_container journal_search_result">
-    <div class="journal_date">{{ journal.date|date:"M d, Y" }}</div>
-    <a class="journal_user" id="user_profile" href="{% url 'profile' journal.user.userextension.slug %}">{{ journal.user.username }}</a>
-    <div class="journal_title"><a href="{% url 'journal_detail' journal.slug %}">{{ journal.title }}</a></div>
-{% endfor %}
-
-<h5>Users:</h5>
-{% for user in user_search_results %}
-<div class="user_search_result"><div><a href="{% url 'profile' user.userextension.slug %}">{{ user.username }}</a></div></div>
-{% endfor %}
-
-{% else %}
-<h3>Latest Public Journals</h3>
-{% for journal in public_journals %}
-<div class="journal_container">
-    <div class="journal_date">{{ journal.date|date:"M d, Y" }}</div>
-    <a class="journal_user" id="user_profile" href="{% url 'profile' journal.user.userextension.slug %}">{{ journal.user.username }}</a>
-    <div class="journal_title"><a href="{% url 'journal_detail' journal.slug %}">{{ journal.title }}</a></div>
+        <a href="{% url 'login'%}">Log In</a>&nbsp;|
+        <a href="{% url 'register'%}">Register</a>
+    {% endif %}
 </div>
-{% endfor %}
+<div class="row">
+    <div class="col-sm-6">
+        <form method='get' action="{% url 'explore'%}">
+            <input type="text" name="search_term" id="search_box">
+            <input type="submit" id="submit_button" value="Search">
+        </form>
 
-{% endif %}
+        {% if search_term %}
+            <h3>Search Results for search term: {{search_term }}</h3>
+            <h5>Journals:</h5>
+            <!-- TODO Display the first 100 or so words of the body! -->
+            {% for journal in journal_search_results %}
+        <div class="journal_container journal_search_result"></div>
+                <div class="journal_date">{{ journal.date|date:"M d, Y" }}</div>
+                <a class="journal_user" id="user_profile" href="{% url 'profile' journal.user.userextension.slug %}">{{ journal.user.username }}</a>
+                <div class="journal_title"><a href="{% url 'journal_detail' journal.slug %}">{{ journal.title }}</a></div>
+            {% endfor %}
+
+            <h5>Users:</h5>
+            {% for user in user_search_results %}
+            <div class="user_search_result"><div><a href="{% url 'profile' user.userextension.slug %}">{{ user.username }}</a></div></div>
+            {% endfor %}
+
+            {% else %}
+                    <br>
+        <h5>Looking for someone?</h5>
+        <h5>Feeling uninspired?</h5>
+        <h6>Try searching for users or journals above</h6>
+        {% endif %}
+    </div>
+    <div class="col-sm-6">
+        <h3>Latest Public Journals</h3>
+        {% for journal in public_journals %}
+            <div class="journal_container">
+                <div class="journal_date">{{ journal.date|date:"M d, Y" }}</div>
+                <a class="journal_user" id="user_profile" href="{% url 'profile' journal.user.userextension.slug %}">{{ journal.user.username }}</a>
+                <div class="journal_title">
+                    <a href="{% url 'journal_detail' journal.slug %}">{{ journal.title }}</a>
+                </div>
+            </div>
+            <br>
+        {% endfor %}
+    </div>
+</div>
 
 {% endblock %}

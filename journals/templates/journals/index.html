@@ -2,45 +2,44 @@
 
 {% block content %}
 
-index
-
-{% if user.is_authenticated %}
-    {{ user.username }}
-<form method="post">
-    {% csrf_token %}
-    <!--display form errors, if any -->
-    {% if form.errors %}
-        {% for field in form %}
-            {% for error in field.errors %}
-                <div class="alert alert-danger">
-                    <strong>{{ error|escape }}</strong>
+<div class="row">
+    <div class="col-sm-7">
+    {% if user.is_authenticated %}
+        <form method="post">
+            {% csrf_token %}
+            <!--display form errors, if any -->
+            {% if form.errors %}
+                {% for field in form %}
+                    {% for error in field.errors %}
+                        <div class="alert alert-danger">
+                            <strong>{{ error|escape }}</strong>
+                        </div>
+                    {% endfor %}
+                {% endfor %}
+                {% for error in form.non_field_errors %}
+                    <div class="alert alert-danger">
+                        <strong>{{ error|escape }}</strong>
+                    </div>
+                {% endfor %}
+            {% endif %}
+            <!--Display my forms fields-->
+            {{form}}
+            <div><input type="submit" value="Submit" id="submit"></div>
+        </form>
+    </div>
+    <div class="col-sm-5">
+        <h4>My latest posts:</h4>
+        {% for journal in latest_three_journals %}
+            <div class="journal_container">
+                <div class="journal_date">{{ journal.date|date:"M d, Y" }}</div>
+                <a class="journal_user" id="user_profile" href="{% url 'profile' journal.user.userextension.slug %}">{{ journal.user.username }}</a>
+                <div class="journal_title">
+                    <a href="{% url 'journal_detail' journal.slug %}">{{ journal.title }}</a>
                 </div>
-            {% endfor %}
-        {% endfor %}
-        {% for error in form.non_field_errors %}
-            <div class="alert alert-danger">
-                <strong>{{ error|escape }}</strong>
             </div>
+            <br>
         {% endfor %}
+    </div>
     {% endif %}
-    <!--Display my forms fields-->
-    {% for field in form %}
-        <div>
-            {{ field.label_tag }}
-            {{ field }}
-        </div>
-    {% endfor %}
-    <div><input type="submit" value="Submit" id="submit"></div>
-</form>
- <h4>My latest posts:</h4>
-{% for journal in latest_three_journals %}
-<div class="journal_container">
-    <div class="journal_date">{{ journal.date|date:"M d, Y" }}</div>
-    <a class="journal_user" id="user_profile" href="{% url 'profile' journal.user.userextension.slug %}">{{ journal.user.username }}</a>
-    <div class="journal_title"><a href="{% url 'journal_detail' journal.slug %}">{{ journal.title }}</a></div>
 </div>
-{% endfor %}
-
-{% endif %}
-
 {% endblock %}
