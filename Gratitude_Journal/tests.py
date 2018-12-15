@@ -79,7 +79,7 @@ class UserTestCase(StaticLiveServerTestCase):
         journal_titles = self.browser.find_elements_by_css_selector('.journal_title')
         self.assertEqual(len(journal_titles), 2)
 
-class UserProfileTestCase(StaticLiveServerTestCase):
+class UserProfileTestCaseOwnProfile(StaticLiveServerTestCase):
     def setUp(self):
         self.browser = webdriver.Chrome('C:\Program Files (x86)\Google\ChromeDriver\chromedriver.exe')
         self.browser.implicitly_wait(2)
@@ -126,8 +126,8 @@ class UserProfileTestCase(StaticLiveServerTestCase):
         self.browser.find_element_by_xpath("//*[contains(text(), 'Dropdown button')]").click()
         self.browser.find_element_by_xpath("//*[contains(text(), 'Profile')]").click()
 
-        user_id = str(User.objects.get(username='functional_test2_user').id)
-        self.assertEqual(self.browser.current_url, self.live_server_url + '/profile/' + user_id)
+        user_slug = str(User.objects.get(username='functional_test2_user').userextension.slug)
+        self.assertEqual(self.browser.current_url, self.live_server_url + '/profile/' + user_slug)
 
         user_journals = self.browser.find_elements_by_class_name('journal_title')
 
@@ -146,7 +146,6 @@ class UserProfileTestCase(StaticLiveServerTestCase):
         # she clicks on the filter to only see her public journals
         self.browser.find_element_by_id('public_radio').click()
         user_journals = self.browser.find_elements_by_class_name('journal_title')
-
         self.assertEqual(len(user_journals), 3)
         self.browser.find_element_by_xpath("//*[contains(text(), 'journal 2 title')]")
         self.browser.find_element_by_xpath("//*[contains(text(), 'journal 4 title')]")
@@ -163,19 +162,18 @@ class UserProfileTestCase(StaticLiveServerTestCase):
         self.browser.find_element_by_xpath("//*[contains(text(), 'journal 3 title')]")
 
         # she can click a journal title, and be taken to a page that displays that journal.
-        journal_title = self.browser.find_elements_by_class_name('journal_title')[3]
+        journal_title = self.browser.find_element_by_link_text('journal 3 title')
         journal_title_text = str(journal_title.text)
         journal_title.click()
-
-        clicked_journal_id = str(Journal.objects.get(title=journal_title_text).id)
+        clicked_journal_slug = str(Journal.objects.get(title=journal_title_text).slug)
 
         clicked_journal = Journal.objects.get(title=journal_title_text)
 
-        self.assertEqual(self.browser.current_url, self.live_server_url + '/journal/' + clicked_journal_id)
+        self.assertEqual(self.browser.current_url, self.live_server_url + '/journal/' + clicked_journal_slug)
 
         self.browser.find_element_by_xpath("//*[contains(text(), '" + clicked_journal.title + "' )]")
         self.browser.find_element_by_xpath("//*[contains(text(), '" + clicked_journal.body + "' )]")
-        self.browser.find_element_by_id("journal_date")
+        self.browser.find_element_by_class_name("journal_date")
 
 class UserProfileTestCase(StaticLiveServerTestCase):
     def setUp(self):
