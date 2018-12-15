@@ -1,9 +1,13 @@
 .journal_title {
-    font-size:15px;
+    font-size: 1em;
 }
 
 .journal_date {
-    font-size: 9px;
+    font-size: .75em;
+}
+
+.radio_filters {
+    padding-left: 45%
 }
 
 .container {
@@ -27,6 +31,26 @@ h1,h2,h3,h4,h5,h6,a {
     font-family: Raleway;
 }
 
-a {
-    text: #800000
+.navbar {
+    padding: 1% 13% 1% 13%;
 }
+
+.navbar a {
+    font-size: 1.5em;
+    transition: all 1s ease;
+}
+.navbar a:hover {
+    font-size: 1.525em;
+    color: #800000;
+    text-decoration: none;
+}
+
+a:hover {
+    text-decoration: none;
+}
+
+.footer-copyright {
+    font-size: .5em;
+    padding-right: 3%;
+}
+

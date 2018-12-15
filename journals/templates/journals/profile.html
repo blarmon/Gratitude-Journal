@@ -47,24 +47,26 @@
 
 });
 </script>
-
-<div id="username">{{ username }}</div>
-{% if user.is_authenticated and not loggedin_user_profile %}
-    {% if followed_by %}
-        <button type="button" class="unfollow-button">Unfollow</button>
-    {% else %}
-        <button type="button" class="follow-button">Follow</button>
+<div class="text-center">
+    <h2 id="username">{{ username }}</h2>
+    {% if user.is_authenticated and not loggedin_user_profile %}
+        {% if followed_by %}
+            <button type="button" class="unfollow-button">Unfollow</button>
+        {% else %}
+            <button type="button" class="follow-button">Follow</button>
+        {% endif %}
+        <br>
     {% endif %}
-<br>
-{% endif %}
+</div>
 
-{% if loggedin_user_profile %}
-    <input type="radio" name="filter" id="public_radio" value="public">Public<br>
-    <input type="radio" name="filter" id="private_radio" value="private">Private<br>
-    <input type="radio" name="filter" id="all_radio" value="all">All<br/>
-{% endif %}
+<div class="radio_filters">
+    {% if loggedin_user_profile %}
+        <input type="radio" name="filter" id="public_radio" value="public">Public<br>
+        <input type="radio" name="filter" id="private_radio" value="private">Private<br>
+        <input type="radio" name="filter" id="all_radio" value="all">All<br/>
+    {% endif %}
+</div>
 <script type="text/javascript">
-
 $(document).ready(function () {
    $( "#private_radio" ).click(function() {
         $("#journal_container_container").empty();
@@ -102,6 +104,7 @@ $(document).ready(function () {
     <div class="journal_date">{{ journal.date|date:"M d, Y" }}</div>
     <div class="journal_title"><a href="{% url 'journal_detail' journal.slug %}">{{ journal.title }}</a></div>
 </div>
+<br>
 {% endfor %}
 </div>
 

@@ -26,7 +26,7 @@
 
 </head>
 <body>
-<nav class="navbar navbar-light">
+<nav class="navbar navbar-expand-sm navbar-light bg-faded">
     <div class="container-fluid">
     <div class="navbar-header">
       <a class="navbar-brand" href="{% url 'index' %}">Gratitude Journal</a>
@@ -34,18 +34,18 @@
     <ul class="nav navbar-nav">
         <li class="active">
         <span>
-            <a href="{% url 'index' %}"> Home</a>&nbsp;|
-            <a href="{% url 'explore' %}">Explore</a>&nbsp;|
+            <a class="ninth before after" href="{% url 'index' %}"> home</a>&nbsp;|
+            <a href="{% url 'explore' %}">explore</a>&nbsp;|
             {% if user.is_authenticated %}
-            <a href="{% url 'feed' %}">Feed</a>&nbsp;|
+            <a href="{% url 'feed' %}">feed</a>&nbsp;|
             {% endif %}
             <span class="dropdown">
           <button class="btn btn-secondary dropdown-toggle" type="button" id="dropdownMenuButton" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">
-            Dropdown button
+            account
           </button>
           <div class="dropdown-menu" aria-labelledby="dropdownMenuButton">
               {% if user.is_authenticated %}
-                Hello, {{ user.username }}
+                &nbsp;Hello, {{ user.username }}
                   <a class="dropdown-item" id="user_profile" href="{% url 'profile' user.userextension.slug %}">Profile</a>
                   <a class="dropdown-item" href="{% url 'logout' %}">Log out</a>
                   {% else %}
@@ -65,11 +65,10 @@
         {% endblock %}
     </div>
 <!-- Footer -->
-<footer class="page-footer font-small blue">
+<footer class="page-footer font-small">
 
   <!-- Copyright -->
-  <div class="footer-copyright text-center py-3">© 2018 Copyright:
-    <a href="https://mdbootstrap.com/education/bootstrap/"> MDBootstrap.com</a>
+  <div class="footer-copyright text-right py-3">© 2019 Copyright: Christopher Siegel
   </div>
   <!-- Copyright -->
 

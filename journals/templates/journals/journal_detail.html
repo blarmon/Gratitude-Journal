@@ -9,9 +9,10 @@
     <div class="journal_body">{{ journal.body }}</div>
 </div>
 
-<h3>Tags:</h3>
+<br>
+<h5>Journal tags:</h5>-
 {% for tag in journal.tags.all %}
-<div class="journal_tag">{{ tag }}</div>
+<span class="journal_tag">{{ tag }}</span>&nbsp;-
 {% endfor %}
 
 {% endblock %}

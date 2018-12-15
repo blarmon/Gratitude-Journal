@@ -22,7 +22,7 @@ def index(request):
                 instance.save()
                 form.save_m2m()
                 return redirect('index')
-        latest_three_journals = Journal.objects.filter(user=request.user).order_by('-date')[:3]
+        latest_three_journals = Journal.objects.filter(user=request.user).order_by('-date')[:5]
         form = JournalForm
         context = {'title': 'Home', 'form': form, 'user_id': request.user.id, 'latest_three_journals': latest_three_journals}
         return render(request, 'journals/index.html', context)
