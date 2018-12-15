@@ -65,9 +65,9 @@ class UserTestCase(StaticLiveServerTestCase):
 
         self.assertEqual(self.browser.current_url, self.live_server_url + '/')
 
-        recent_posts = self.browser.find_elements_by_css_selector('.recent_post')
+        journal_titles = self.browser.find_elements_by_css_selector('.journal_container')
 
-        self.assertEqual(len(recent_posts), 3)
+        self.assertEqual(len(journal_titles), 3)
 
         self.assertEqual(len(self.browser.find_elements_by_xpath("//*[contains(text(), 'journal 1 title')]")), 1)
 
@@ -76,8 +76,8 @@ class UserTestCase(StaticLiveServerTestCase):
         self.browser.find_element_by_link_text('Explore').click()
         self.assertEqual(self.browser.current_url, self.live_server_url + '/explore/')
 
-        public_posts = self.browser.find_elements_by_css_selector('.public_post')
-        self.assertEqual(len(public_posts), 2)
+        journal_titles = self.browser.find_elements_by_css_selector('.journal_title')
+        self.assertEqual(len(journal_titles), 2)
 
 class UserProfileTestCase(StaticLiveServerTestCase):
     def setUp(self):
@@ -244,8 +244,8 @@ class UserProfileTestCase(StaticLiveServerTestCase):
 
         clicked_journal = Journal.objects.get(title=journal_one_text)
 
-        detailed_journal_title = self.browser.find_element_by_id('journal_title').text
-        detailed_journal_body = self.browser.find_element_by_id('journal_body').text
+        detailed_journal_title = self.browser.find_element_by_class_name('journal_title').text
+        detailed_journal_body = self.browser.find_element_by_class_name('journal_body').text
 
         self.assertEqual(clicked_journal.title, detailed_journal_title)
         self.assertEqual(clicked_journal.body, detailed_journal_body)
@@ -460,14 +460,26 @@ class UserTestsFollowersFunction(StaticLiveServerTestCase):
         self.assertEqual(self.browser.current_url, self.live_server_url + '/feed/')
         journals = self.browser.find_elements_by_class_name('journal_container')
         self.assertEqual(len(journals), 5)
-        self.assertEqual(journals[0].find_element_by_class_name('public_post').text, 'user 1 journal 1 title')
-        self.assertEqual(journals[2].find_element_by_class_name('public_post').text, 'user 2 journal 2 title')
-        self.assertEqual(journals[4].find_element_by_class_name('public_post').text, 'user 2 journal 3 title')
-
-        self.fail('incomplete test')
+        self.assertEqual(journals[0].find_element_by_class_name('journal_title').text, 'user 1 journal 1 title')
+        self.assertEqual(journals[2].find_element_by_class_name('journal_title').text, 'user 2 journal 2 title')
+        self.assertEqual(journals[4].find_element_by_class_name('journal_title').text, 'user 2 journal 3 title')
+        
         # we go back and unfollow one user
 
+        self.browser.find_element_by_link_text('Explore').click()
+        self.browser.find_element_by_link_text('testuser_followed2').click()
+        self.browser.find_element_by_class_name('unfollow-button').click()
+
         # go back to feed and now see only the other users posts
+        time.sleep(1)
+        self.browser.find_element_by_link_text('Feed').click()
+        journals = self.browser.find_elements_by_class_name('journal_container')
+        self.assertEqual(len(journals), 2)
+        self.assertEqual(journals[0].find_element_by_class_name('journal_title').text, 'user 1 journal 1 title')
+        self.assertEqual(journals[1].find_element_by_class_name('journal_title').text, 'user 1 journal 2 title')
+
+
+#TODO create an infinite scroll on the user feed!
 
 
 

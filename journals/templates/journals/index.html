@@ -34,8 +34,11 @@ index
 </form>
  <h4>My latest posts:</h4>
 {% for journal in latest_three_journals %}
-<div class="recent_post"><a href="{% url 'journal_detail' journal.slug %}">{{ journal.title }}</a>{{ journal.date }}</div>
-<br>
+<div class="journal_container">
+    <div class="journal_date">{{ journal.date|date:"M d, Y" }}</div>
+    <a class="journal_user" id="user_profile" href="{% url 'profile' journal.user.userextension.slug %}">{{ journal.user.username }}</a>
+    <div class="journal_title"><a href="{% url 'journal_detail' journal.slug %}">{{ journal.title }}</a></div>
+</div>
 {% endfor %}
 
 {% endif %}

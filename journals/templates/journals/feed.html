@@ -5,9 +5,9 @@
 
 {% for journal in journals_from_followed %}
 <div class="journal_container">
-    <div>{{ journal.date }}</div>
+    <div class="journal_date">{{ journal.date|date:"M d, Y" }}</div>
     <a class="journal_user" id="user_profile" href="{% url 'profile' journal.user.userextension.slug %}">{{ journal.user.username }}</a>
-    <div class="public_post"><a href="{% url 'journal_detail' journal.slug %}">{{ journal.title }}</a></div>
+    <div class="journal_title"><a href="{% url 'journal_detail' journal.slug %}">{{ journal.title }}</a></div>
 </div>
 <br>
 {% endfor %}

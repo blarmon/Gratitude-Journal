@@ -2,10 +2,12 @@
 
 {% block content %}
 
-<div id="journal_user"><a href="{% url 'profile' journal.user.userextension.slug %}">{{ journal.user.username }}</a></div>
-<div id="journal_date">{{ journal.date }}</div>
-<div id="journal_title">{{ journal.title }}</div>
-<div id="journal_body">{{ journal.body }}</div>
+<div class="journal_container">
+    <div class="journal_date">{{ journal.date|date:"M d, Y" }}</div>
+    <a class="journal_user" id="user_profile" href="{% url 'profile' journal.user.userextension.slug %}">{{ journal.user.username }}</a>
+    <div class="journal_title"><a href="{% url 'journal_detail' journal.slug %}">{{ journal.title }}</a></div>
+    <div class="journal_body">{{ journal.body }}</div>
+</div>
 
 <h3>Tags:</h3>
 {% for tag in journal.tags.all %}

@@ -20,7 +20,10 @@ Explore page
 <h5>Journals:</h5>
 <!-- TODO Display the first 100 or so words of the body! -->
 {% for journal in journal_search_results %}
-<div class="journal_search_result"><div><a href="{% url 'journal_detail' journal.slug %}">{{ journal.title }}</a>{{ journal.date }}</div></div>
+    <div class="journal_container journal_search_result">
+    <div class="journal_date">{{ journal.date|date:"M d, Y" }}</div>
+    <a class="journal_user" id="user_profile" href="{% url 'profile' journal.user.userextension.slug %}">{{ journal.user.username }}</a>
+    <div class="journal_title"><a href="{% url 'journal_detail' journal.slug %}">{{ journal.title }}</a></div>
 {% endfor %}
 
 <h5>Users:</h5>
@@ -29,13 +32,13 @@ Explore page
 {% endfor %}
 
 {% else %}
-<h3>Latest Journals</h3>
+<h3>Latest Public Journals</h3>
 {% for journal in public_journals %}
 <div class="journal_container">
-<a class="journal_user" id="user_profile" href="{% url 'profile' journal.user.userextension.slug %}">{{ journal.user.username }}</a>
-<div class="public_post"><a href="{% url 'journal_detail' journal.slug %}">{{ journal.title }}</a></div>
+    <div class="journal_date">{{ journal.date|date:"M d, Y" }}</div>
+    <a class="journal_user" id="user_profile" href="{% url 'profile' journal.user.userextension.slug %}">{{ journal.user.username }}</a>
+    <div class="journal_title"><a href="{% url 'journal_detail' journal.slug %}">{{ journal.title }}</a></div>
 </div>
-<br>
 {% endfor %}
 
 {% endif %}

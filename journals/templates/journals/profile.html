@@ -67,27 +67,36 @@
 
 $(document).ready(function () {
    $( "#private_radio" ).click(function() {
-        $("#journal_container").empty();
+        $("#journal_container_container").empty();
         {% for journal in user_journals %}
             {% if journal.public == False %}
-                $("#journal_container").append('<div><a href="/journal/{{journal.slug}}" class="journal_title">{{ journal.title }}</a><span id="journal_date">{{ journal.date }}</span></div>')
+                $("#journal_container_container").append('    <div class="journal_container">
+    <div class="journal_date">{{ journal.date|date:"M d, Y" }}</div>
+    <a class="journal_user" id="user_profile" href="{% url 'profile' journal.user.userextension.slug %}">{{ journal.user.username }}</a>
+    <div class="journal_title"><a href="{% url 'journal_detail' journal.slug %}">{{ journal.title }}</a></div>')
             {% endif %}
         {% endfor %}
    });
 
    $( "#public_radio" ).click(function() {
-        $("#journal_container").empty();
+        $("#journal_container_container").empty();
         {% for journal in user_journals %}
             {% if journal.public == True %}
-                $("#journal_container").append('<div><a href="/journal/{{journal.slug}}" class="journal_title">{{ journal.title }}</a><span id="journal_date">{{ journal.date }}</span></div>')
+                $("#journal_container_container").append('    <div class="journal_container">
+    <div class="journal_date">{{ journal.date|date:"M d, Y" }}</div>
+    <a class="journal_user" id="user_profile" href="{% url 'profile' journal.user.userextension.slug %}">{{ journal.user.username }}</a>
+    <div class="journal_title"><a href="{% url 'journal_detail' journal.slug %}">{{ journal.title }}</a></div>')
             {% endif %}
         {% endfor %}
    });
 
    $( "#all_radio" ).click(function() {
-        $("#journal_container").empty();
+        $("#journal_container_container").empty();
         {% for journal in user_journals %}
-                $("#journal_container").append('<div><a href="/journal/{{journal.slug}}" class="journal_title">{{ journal.title }}</a><span id="journal_date">{{ journal.date }}</span></div>')
+                $("#journal_container_container").append('    <div class="journal_container">
+    <div class="journal_date">{{ journal.date|date:"M d, Y" }}</div>
+    <a class="journal_user" id="user_profile" href="{% url 'profile' journal.user.userextension.slug %}">{{ journal.user.username }}</a>
+    <div class="journal_title"><a href="{% url 'journal_detail' journal.slug %}">{{ journal.title }}</a></div>')
         {% endfor %}
    });
 
@@ -95,9 +104,13 @@ $(document).ready(function () {
 </script>
 
 
-<div id="journal_container">
+<div id="journal_container_container">
 {% for journal in user_journals%}
-    <div><a href="/journal/{{journal.slug}}" class="journal_title">{{ journal.title }}</a><span id="journal_date">{{ journal.date }}</span></div>
+    <div class="journal_container">
+    <div class="journal_date">{{ journal.date|date:"M d, Y" }}</div>
+    <a class="journal_user" id="user_profile" href="{% url 'profile' journal.user.userextension.slug %}">{{ journal.user.username }}</a>
+    <div class="journal_title"><a href="{% url 'journal_detail' journal.slug %}">{{ journal.title }}</a></div>
+</div>
 {% endfor %}
 </div>
 
