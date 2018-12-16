@@ -22,4 +22,17 @@
 <span class="journal_tag">{{ tag }}</span>&nbsp;-
 {% endfor %}
 
+<br>
+<br>
+<br>
+<br>
+
+<div class="text-center">
+    <form action="{% url 'delete_journal' %}" method="post">
+        {% csrf_token %}
+        <input type="hidden" name="journal_id" value="{{ journal.id }}">
+        <input type="submit" id="delete-button" value="Delete Journal">
+    </form>
+</div>
+
 {% endblock %}

@@ -81,6 +81,11 @@ def feed(request):
     return render(request, 'journals/feed.html', context)
 
 
+def delete_journal(request):
+    Journal.objects.get(id=request.POST['journal_id']).delete()
+    return redirect('index')
+
+
 def register(request):
     if request.method == 'POST':
         form = UserCreationForm(request.POST)

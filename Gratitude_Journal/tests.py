@@ -66,14 +66,13 @@ class UserTestCase(StaticLiveServerTestCase):
         self.assertEqual(self.browser.current_url, self.live_server_url + '/')
 
         journal_titles = self.browser.find_elements_by_css_selector('.journal_container')
-
-        self.assertEqual(len(journal_titles), 3)
+        self.assertEqual(len(journal_titles), 4)
 
         self.assertEqual(len(self.browser.find_elements_by_xpath("//*[contains(text(), 'journal 1 title')]")), 1)
 
         # She also can see her latest post on the explore page now, as well as her other public journals.
 
-        self.browser.find_element_by_link_text('Explore').click()
+        self.browser.find_element_by_link_text('explore').click()
         self.assertEqual(self.browser.current_url, self.live_server_url + '/explore/')
 
         journal_titles = self.browser.find_elements_by_css_selector('.journal_title')
@@ -123,7 +122,7 @@ class UserProfileTestCaseOwnProfile(StaticLiveServerTestCase):
         self.assertEqual(self.browser.current_url, self.live_server_url + '/')
 
         #she finds the profile button in the navbars dropdown and clicks it.  on this page she sees all of the titles of her journals (TODO? maybe add the first 100 words of the body?), ordered by date.
-        self.browser.find_element_by_xpath("//*[contains(text(), 'Dropdown button')]").click()
+        self.browser.find_element_by_xpath("//*[contains(text(), 'account')]").click()
         self.browser.find_element_by_xpath("//*[contains(text(), 'Profile')]").click()
 
         user_slug = str(User.objects.get(username='functional_test2_user').userextension.slug)
@@ -212,7 +211,7 @@ class UserProfileTestCase(StaticLiveServerTestCase):
 
         # They click the explore page and see public posts from all users.
 
-        self.browser.find_element_by_link_text('Explore').click()
+        self.browser.find_element_by_link_text('explore').click()
         self.assertEqual(self.browser.current_url, self.live_server_url + '/explore/')
 
         public_journals = self.browser.find_elements_by_class_name('journal_container')
@@ -339,7 +338,7 @@ class UserTestsSearchFunction(StaticLiveServerTestCase):
 
         # She goes to the explore page to see other users' journals
 
-        self.browser.find_element_by_link_text('Explore').click()
+        self.browser.find_element_by_link_text('explore').click()
         self.assertEqual(self.browser.current_url, self.live_server_url + '/explore/')
 
 
@@ -383,6 +382,7 @@ class UserTestsSearchFunction(StaticLiveServerTestCase):
 # TODO, add a follow button.  maybe don't share follower counts (except to the user themselves) and the link, but use it to weight searches?
 # TODO Followed users will then show up on ones profiles.
 # TODO The site certainly does not need to be a popularity contest, but people do have good content to share.
+
 
 class UserTestsFollowersFunction(StaticLiveServerTestCase):
 
@@ -440,7 +440,7 @@ class UserTestsFollowersFunction(StaticLiveServerTestCase):
         register_form.find_element_by_class_name('submit').click()
         self.assertEqual(self.browser.current_url, self.live_server_url + '/')
 
-        self.browser.find_element_by_link_text('Explore').click()
+        self.browser.find_element_by_link_text('explore').click()
         self.browser.find_element_by_link_text('testuser_followed1').click()
         self.browser.find_element_by_class_name('follow-button').click()
         time.sleep(1)
@@ -448,11 +448,11 @@ class UserTestsFollowersFunction(StaticLiveServerTestCase):
         time.sleep(1)
         self.browser.find_element_by_class_name('follow-button').click()
 
-        self.browser.find_element_by_link_text('Explore').click()
+        self.browser.find_element_by_link_text('explore').click()
         self.browser.find_element_by_link_text('testuser_followed2').click()
         self.browser.find_element_by_class_name('follow-button').click()
         time.sleep(1)
-        self.browser.find_element_by_link_text('Feed').click()
+        self.browser.find_element_by_link_text('feed').click()
 
         # we see top 20 latest public journals from that user in our newsfeed in order by date
         self.assertEqual(self.browser.current_url, self.live_server_url + '/feed/')
@@ -464,13 +464,13 @@ class UserTestsFollowersFunction(StaticLiveServerTestCase):
         
         # we go back and unfollow one user
 
-        self.browser.find_element_by_link_text('Explore').click()
+        self.browser.find_element_by_link_text('explore').click()
         self.browser.find_element_by_link_text('testuser_followed2').click()
         self.browser.find_element_by_class_name('unfollow-button').click()
 
         # go back to feed and now see only the other users posts
         time.sleep(1)
-        self.browser.find_element_by_link_text('Feed').click()
+        self.browser.find_element_by_link_text('feed').click()
         journals = self.browser.find_elements_by_class_name('journal_container')
         self.assertEqual(len(journals), 2)
         self.assertEqual(journals[0].find_element_by_class_name('journal_title').text, 'user 1 journal 1 title')
@@ -478,6 +478,61 @@ class UserTestsFollowersFunction(StaticLiveServerTestCase):
 
 
 #TODO create an infinite scroll on the user feed!
+
+class UserDeletesJournal(StaticLiveServerTestCase):
+    def setUp(self):
+        self.browser = webdriver.Chrome('C:\Program Files (x86)\Google\ChromeDriver\chromedriver.exe')
+        self.browser.implicitly_wait(2)
+
+    def tearDown(self):
+        self.browser.quit()
+
+    def test_user_deletes_a_journal(self):
+
+        # user creates and then deletes a journal
+
+        home_page = self.browser.get(self.live_server_url + '')
+
+        # start on explore page
+
+        self.assertEqual(self.browser.current_url, self.live_server_url + '/explore/')
+        self.assertEqual(self.browser.title, 'Explore')
+
+        log_in_button = self.browser.find_element_by_link_text('Log In')
+        register_button = self.browser.find_element_by_link_text('Register')
+        register_button.click()
+
+        # register an account
+
+        register_form = self.browser.find_element_by_id('user-registration-form')
+        register_form.find_element_by_id('id_username').send_keys('functional_test_user')
+        register_form.find_element_by_id('id_password1').send_keys('user_password')
+        register_form.find_element_by_id('id_password2').send_keys('user_password')
+
+        register_form.find_element_by_class_name('submit').click()
+        self.assertEqual(self.browser.current_url, self.live_server_url + '/')
+
+        # submit a journal entry
+        journal_form = self.browser.find_element_by_id('journal_form')
+        journal_form.find_element_by_id('id_title').send_keys('functional_test_user title')
+        journal_form.find_element_by_id('id_body').send_keys('functional_test_user body')
+        journal_form.find_element_by_id('submit').click()
+
+        # go to the detail page for that journal
+        self.browser.find_element_by_class_name('journal_title').click()
+
+        self.assertEqual(self.browser.current_url, self.live_server_url + '/journal/functional_test_user-title')
+
+        # delete the journal
+        self.browser.find_element_by_id('delete-button').click()
+
+        # redirected back to home page
+        self.assertEqual(self.browser.current_url, self.live_server_url + '/')
+
+        # look for journals nd see that there are none now.
+        journals = self.browser.find_elements_by_class_name('journal_title')
+
+        self.assertEqual(len(journals), 0)
 
 
 

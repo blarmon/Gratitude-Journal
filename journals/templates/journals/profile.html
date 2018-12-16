@@ -72,9 +72,8 @@ $(document).ready(function () {
         $("#journal_container_container").empty();
         {% for journal in user_journals %}
             {% if journal.public == False %}
-                $("#journal_container_container").append('<div class="journal_container"><div class="journal_date">{{ journal.date|date:"M d, Y" }}</div><div class="journal_title"><a href="{% url 'journal_detail' journal.slug %}">{{ journal.title }}</a></div>')
+                $("#journal_container_container").append('<div class="journal_container"><div class="journal_date">{{ journal.date|date:"M d, Y" }}</div><div class="journal_title"><a href="{% url 'journal_detail' journal.slug %}">{{ journal.title }}</a></div><br>')
             {% endif %}
-        <br>
         {% endfor %}
    });
 
@@ -83,17 +82,15 @@ $(document).ready(function () {
         $("#journal_container_container").empty();
         {% for journal in user_journals %}
             {% if journal.public == True %}
-                $("#journal_container_container").append('<div class="journal_container"><div class="journal_date">{{ journal.date|date:"M d, Y" }}</div><div class="journal_title"><a href="{% url 'journal_detail' journal.slug %}">{{ journal.title }}</a></div>')
+                $("#journal_container_container").append('<div class="journal_container"><div class="journal_date">{{ journal.date|date:"M d, Y" }}</div><div class="journal_title"><a href="{% url 'journal_detail' journal.slug %}">{{ journal.title }}</a></div><br>')
             {% endif %}
-        <br>
         {% endfor %}
    });
 
    $( "#all_radio" ).click(function() {
         $("#journal_container_container").empty();
         {% for journal in user_journals %}
-                $("#journal_container_container").append('<div class="journal_container"><div class="journal_date">{{ journal.date|date:"M d, Y" }}</div><div class="journal_title"><a href="{% url 'journal_detail' journal.slug %}">{{ journal.title }}</a></div>')
-        <br>
+                $("#journal_container_container").append('<div class="journal_container"><div class="journal_date">{{ journal.date|date:"M d, Y" }}</div><div class="journal_title"><a href="{% url 'journal_detail' journal.slug %}">{{ journal.title }}</a></div><br>')
         {% endfor %}
    });
 
