@@ -61,9 +61,9 @@
 
 <div class="radio_filters">
     {% if loggedin_user_profile %}
-        <input type="radio" name="filter" id="public_radio" value="public">Public<br>
-        <input type="radio" name="filter" id="private_radio" value="private">Private<br>
-        <input type="radio" name="filter" id="all_radio" value="all">All<br/>
+        <input type="radio" name="filter" id="public_radio" value="public">public<br>
+        <input type="radio" name="filter" id="private_radio" value="private">private<br>
+        <input type="radio" name="filter" id="all_radio" value="all">all<br/>
     {% endif %}
 </div>
 <script type="text/javascript">
@@ -74,6 +74,7 @@ $(document).ready(function () {
             {% if journal.public == False %}
                 $("#journal_container_container").append('<div class="journal_container"><div class="journal_date">{{ journal.date|date:"M d, Y" }}</div><div class="journal_title"><a href="{% url 'journal_detail' journal.slug %}">{{ journal.title }}</a></div>')
             {% endif %}
+        <br>
         {% endfor %}
    });
 
@@ -84,6 +85,7 @@ $(document).ready(function () {
             {% if journal.public == True %}
                 $("#journal_container_container").append('<div class="journal_container"><div class="journal_date">{{ journal.date|date:"M d, Y" }}</div><div class="journal_title"><a href="{% url 'journal_detail' journal.slug %}">{{ journal.title }}</a></div>')
             {% endif %}
+        <br>
         {% endfor %}
    });
 
@@ -91,6 +93,7 @@ $(document).ready(function () {
         $("#journal_container_container").empty();
         {% for journal in user_journals %}
                 $("#journal_container_container").append('<div class="journal_container"><div class="journal_date">{{ journal.date|date:"M d, Y" }}</div><div class="journal_title"><a href="{% url 'journal_detail' journal.slug %}">{{ journal.title }}</a></div>')
+        <br>
         {% endfor %}
    });
 

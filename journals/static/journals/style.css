@@ -7,7 +7,11 @@
 }
 
 .radio_filters {
-    padding-left: 45%
+    padding-left: 45%;
+}
+
+.explore_journals {
+    padding-left: 5%;
 }
 
 .container {
@@ -35,11 +39,11 @@ h1,h2,h3,h4,h5,h6,a {
     padding: 1% 13% 1% 13%;
 }
 
-.navbar a {
+.navbar a, .big-link {
     font-size: 1.5em;
-    transition: all 1s ease;
+    transition: all .5s ease;
 }
-.navbar a:hover {
+.navbar a:hover, .big-link:hover{
     font-size: 1.525em;
     color: #800000;
     text-decoration: none;

@@ -28,7 +28,7 @@
         </form>
     </div>
     <div class="col-sm-5">
-        <h4>My latest posts:</h4>
+        <h3>My latest posts</h3>
         {% for journal in latest_three_journals %}
             <div class="journal_container">
                 <div class="journal_date">{{ journal.date|date:"M d, Y" }}</div>
