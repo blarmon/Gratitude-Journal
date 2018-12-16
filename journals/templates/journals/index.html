@@ -23,7 +23,18 @@
                 {% endfor %}
             {% endif %}
             <!--Display my forms fields-->
-            {{form}}
+            <div class="label_tag">{{form.title.label_tag}}</div>
+            <div class="form-element">{{ form.title }}</div>
+            <br>
+            <div class="label_tag">{{form.body.label_tag}}</div>
+            <div class="form-element">{{ form.body }}</div>
+            <br>
+            <span class="label_tag form-element">make this post visible to others -> {{ form.public }}</span>
+            <br>
+            <br>
+            <div class="label_tag">{{form.tags.label_tag|linebreaks}}</div>
+            <div class="form-element">{{ form.tags }}</div>
+            <br>
             <div><input type="submit" value="Submit" id="submit"></div>
         </form>
     </div>

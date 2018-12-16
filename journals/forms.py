@@ -7,8 +7,8 @@ class JournalForm(forms.ModelForm):
         model = Journal
         fields = ['public', 'title', 'body', 'tags',]
         labels = {
-            'public': 'Public',
-            'title': 'Title',
-            'body': 'What are you thankful for today?',
-            'tags': 'Enter tags below separated by a space.  Use quotation marks for multi-word tags.'
+            'public': 'check here to make this post visible to others',
+            'title': 'title',
+            'body': 'what are you thankful for today?',
+            'tags': 'enter tags below separated by a space \n "multi-word tags" get quotation marks'
         }

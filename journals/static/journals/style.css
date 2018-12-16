@@ -58,3 +58,11 @@ a:hover {
     padding-right: 3%;
 }
 
+.dropdown-item {
+    color: #007bff !important;
+    font-size: 1em !important;
+}
+
+#id_tags, #id_title, #id_body {
+    width: 90%;
+}
