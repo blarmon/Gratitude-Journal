@@ -13,3 +13,9 @@
 ## todo add some more user info to the top of the profile page.  picture, email, whatever
 
 ## todo in profile page show users who they follow and whos following them.
+
+## todo EASY ONE.  make it so users can't delete other peoples journals...
+
+## TODO make header and navbar fixed to their spots on the screen
+
+## TODO create some more unite tests for my views and urls

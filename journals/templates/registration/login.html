@@ -1,3 +1,7 @@
+{% extends 'journals/base.html' %}
+
+{% block content %}
+
 <title>Log In</title>
 {% if form.errors %}
 <p>Something went wrong!</p>
@@ -11,8 +15,11 @@
     {% csrf_token %}
 
     <p>Username: {{ form.username }}</p>
+    <p>{{ form.email.label_tag }} {{ form.email }}</p>
     <p>Password: {{ form.password }}</p>
 
     <input type="submit" value="login">
     <input type="hidden" name="next" value="{{ next }}">
 </form>
+
+{% endblock %}

@@ -1,3 +1,7 @@
+{% extends 'journals/base.html' %}
+
+{% block content %}
+
 <Title>Register</Title>
 
 <form method="post" action="{% url 'register' %}" id="user-registration-form">
@@ -9,3 +13,5 @@
     {{ form }}<br>
     <input class="submit" type="submit" value='Submit'>
 </form>
+
+{% endblock %}
