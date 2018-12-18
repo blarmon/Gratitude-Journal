@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
 from django.db.models import Q
 
-from journals.forms import JournalForm
+from journals.forms import JournalForm, RegistrationForm
 from journals.models import Journal, UserExtension
 
 
@@ -54,7 +54,7 @@ def profile(request, user_slug):
     if request.user.is_authenticated:
         if request.user.userextension.follows.filter(user_id=user_profile.id):
             followed_by = True
-    context = {'user_journals': user_journals, 'username': user_profile.username, 'loggedin_user_profile': loggedin_user_profile, 'followed_by': followed_by}
+    context = {'user_journals': user_journals, 'user': user_profile, 'loggedin_user_profile': loggedin_user_profile, 'followed_by': followed_by}
     return render(request, 'journals/profile.html', context)
 
 
@@ -88,15 +88,16 @@ def delete_journal(request):
 
 def register(request):
     if request.method == 'POST':
-        form = UserCreationForm(request.POST)
+        form = RegistrationForm(request.POST)
         if form.is_valid():
             form.save()
             username = form.cleaned_data['username']
             password = form.cleaned_data['password1']
+
             user = authenticate(username=username, password=password)
             login(request, user)
             return redirect('index')
     else:
-        form = UserCreationForm()
+        form = RegistrationForm()
     context = {'form': form}
     return render(request, 'registration/register.html', context)
