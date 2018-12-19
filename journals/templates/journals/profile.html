@@ -48,8 +48,8 @@
 });
 </script>
 <div class="text-center">
-    <h2 id="username">{{ user.username }}</h2>
-    <h4 id="user_email">{{ user.email }}</h4>
+    <h2 id="username">{{ user_profile.username }}</h2>
+    <h4 id="user_email">{{ user_profile.email }}</h4>
     {% if user.is_authenticated and not loggedin_user_profile %}
         {% if followed_by %}
             <button type="button" class="unfollow-button">Unfollow</button>
@@ -100,7 +100,7 @@ $(document).ready(function () {
 
 
 <div id="journal_container_container">
-{% for journal in user_journals%}
+{% for journal in user_journals %}
     <div class="journal_container">
     <div class="journal_date">{{ journal.date|date:"M d, Y" }}</div>
     <div class="journal_title"><a href="{% url 'journal_detail' journal.slug %}">{{ journal.title }}</a></div>
@@ -108,5 +108,18 @@ $(document).ready(function () {
 <br>
 {% endfor %}
 </div>
+
+{% if logged_in_userprofile %}
+    <!--TODO make this shit better cmon-->
+    <h5>users I follow</h5>
+    {% for userextensions in follows_users %}
+        <div><a href="{% url 'profile' userextensions.slug %}">{{ userextensions.user.username }}</a></div>
+    {% endfor %}
+    <br>
+    <h5>users that follow me:</h5>
+    {% for userextensions in followed_by_users %}
+        <div><a href="{% url 'profile' userextensions.slug %}">{{ userextensions.user.username }}</a><div>
+    {% endfor %}
+{% endif %}
 
 {% endblock %}

@@ -54,7 +54,12 @@ def profile(request, user_slug):
     if request.user.is_authenticated:
         if request.user.userextension.follows.filter(user_id=user_profile.id):
             followed_by = True
-    context = {'user_journals': user_journals, 'user': user_profile, 'loggedin_user_profile': loggedin_user_profile, 'followed_by': followed_by}
+    follows_users = []
+    followed_by_users = []
+    if loggedin_user_profile:
+        follows_users = request.user.userextension.follows.all()
+        followed_by_users = request.user.userextension.followed_by.all()
+    context = {'user_journals': user_journals, 'user_profile': user_profile, 'loggedin_user_profile': loggedin_user_profile, 'followed_by': followed_by, 'follows_users': follows_users, 'followed_by_users': followed_by_users}
     return render(request, 'journals/profile.html', context)
 
 
