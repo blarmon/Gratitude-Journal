@@ -26,6 +26,10 @@
     padding-left: 5%;
 }
 
+.journal_user.detail {
+    font-size: 1.7em;
+}
+
 body {
     line-height: 1.4;
     font-family: 'Roboto Mono', monospace;

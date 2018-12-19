@@ -60,7 +60,10 @@ def profile(request, user_slug):
 
 def journal_detail(request, journal_slug):
     journal = Journal.objects.get(slug=journal_slug)
-    context = {'journal': journal}
+    logged_in_users_journal = False
+    if request.user == journal.user:
+        logged_in_users_journal = True
+    context = {'journal': journal, 'logged_in_users_journal': logged_in_users_journal}
     return render(request, 'journals/journal_detail.html', context)
 
 
