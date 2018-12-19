@@ -58,3 +58,15 @@ class JournalDetailViewTestCase(TestCase):
             journal_slug = self.journal1.slug
             response = self.client.get(reverse('journal_detail', kwargs={'journal_slug': journal_slug}))
             self.assertEqual(response.status_code, 200)
+
+class FeedViewTestCase(TestCase):
+
+    def setUp(self):
+        self.factory = RequestFactory()
+        self.client.force_login(User.objects.get_or_create(username='testuser')[0])
+        self.user = User.objects.get_or_create(username='testuser')[0]
+
+    def test_journal_detail_view(self):
+        with self.assertTemplateUsed('journals/feed.html'):
+            response = self.client.get(reverse('feed'))
+            self.assertEqual(response.status_code, 200)

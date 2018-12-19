@@ -46,6 +46,7 @@ class UserTestCase(StaticLiveServerTestCase):
 
         register_form = self.browser.find_element_by_id('user-registration-form')
         register_form.find_element_by_id('id_username').send_keys('functional_test_user')
+        register_form.find_element_by_id('id_email').send_keys('functional_test2_user@bogus.com')
         register_form.find_element_by_id('id_password1').send_keys('user_password')
         register_form.find_element_by_id('id_password2').send_keys('user_password')
 
@@ -99,6 +100,7 @@ class UserProfileTestCaseOwnProfile(StaticLiveServerTestCase):
         #she fills out the form and submits it.  she is redirected to her user page.
         register_form = self.browser.find_element_by_id('user-registration-form')
         register_form.find_element_by_id('id_username').send_keys('functional_test2_user')
+        register_form.find_element_by_id('id_email').send_keys('functional_test2_user@bogus.com')
         register_form.find_element_by_id('id_password1').send_keys('user_password')
         register_form.find_element_by_id('id_password2').send_keys('user_password')
         register_form.find_element_by_class_name('submit').click()
@@ -200,6 +202,7 @@ class UserProfileTestCase(StaticLiveServerTestCase):
 
         register_form = self.browser.find_element_by_id('user-registration-form')
         register_form.find_element_by_id('id_username').send_keys('functional_test_user')
+        register_form.find_element_by_id('id_email').send_keys('functional_test2_user@bogus.com')
         register_form.find_element_by_id('id_password1').send_keys('user_password')
         register_form.find_element_by_id('id_password2').send_keys('user_password')
 
@@ -330,6 +333,7 @@ class UserTestsSearchFunction(StaticLiveServerTestCase):
 
         register_form = self.browser.find_element_by_id('user-registration-form')
         register_form.find_element_by_id('id_username').send_keys('functional_test_user')
+        register_form.find_element_by_id('id_email').send_keys('functional_test2_user@bogus.com')
         register_form.find_element_by_id('id_password1').send_keys('user_password')
         register_form.find_element_by_id('id_password2').send_keys('user_password')
 
@@ -434,6 +438,7 @@ class UserTestsFollowersFunction(StaticLiveServerTestCase):
 
         register_form = self.browser.find_element_by_id('user-registration-form')
         register_form.find_element_by_id('id_username').send_keys('functional_test_user')
+        register_form.find_element_by_id('id_email').send_keys('functional_test2_user@bogus.com')
         register_form.find_element_by_id('id_password1').send_keys('user_password')
         register_form.find_element_by_id('id_password2').send_keys('user_password')
 
@@ -506,6 +511,7 @@ class UserDeletesJournal(StaticLiveServerTestCase):
 
         register_form = self.browser.find_element_by_id('user-registration-form')
         register_form.find_element_by_id('id_username').send_keys('functional_test_user')
+        register_form.find_element_by_id('id_email').send_keys('functional_test2_user@bogus.com')
         register_form.find_element_by_id('id_password1').send_keys('user_password')
         register_form.find_element_by_id('id_password2').send_keys('user_password')
 
