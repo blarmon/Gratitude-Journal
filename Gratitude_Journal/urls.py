@@ -30,6 +30,10 @@ urlpatterns = [
     path('follow/', views.follow_user, name='follow_user'),
     path('feed/', views.feed, name='feed'),
     path('delete_journal/', views.delete_journal, name='delete_journal'),
+    path('edit_profile_image', views.edit_profile_image, name='edit_profile_image'),
+
+
+    # AUTH urls
     path('accounts/password_change/',
          auth_views.PasswordChangeView.as_view(template_name='registration/password_change_form_custom.html'),
          name='password_change'),

@@ -43,10 +43,13 @@ def explore(request):
 
 
 def profile(request, user_slug):
+    context = {}
     user_profile = User.objects.get(userextension=UserExtension.objects.get(slug=user_slug))
     if user_profile == request.user:
         loggedin_user_profile = True
         user_journals = Journal.objects.filter(user=user_profile).order_by('-date')
+        registration_form_user_extension = RegistrationFormUserExtension()
+        context.update({'registration_form_user_extension': registration_form_user_extension})
     else:
         loggedin_user_profile = False
         user_journals = Journal.objects.filter(user=user_profile, public=True).order_by('-date')
@@ -59,8 +62,17 @@ def profile(request, user_slug):
     if loggedin_user_profile:
         follows_users = request.user.userextension.follows.all()
         followed_by_users = request.user.userextension.followed_by.all()
-    context = {'user_journals': user_journals, 'user_profile': user_profile, 'loggedin_user_profile': loggedin_user_profile, 'followed_by': followed_by, 'follows_users': follows_users, 'followed_by_users': followed_by_users}
+    context.update({'user_journals': user_journals, 'user_profile': user_profile, 'loggedin_user_profile': loggedin_user_profile, 'followed_by': followed_by, 'follows_users': follows_users, 'followed_by_users': followed_by_users})
     return render(request, 'journals/profile.html', context)
+
+
+def edit_profile_image(request):
+    if request.method == 'POST':
+        registration_form_user_extension = RegistrationFormUserExtension(request.POST, request.FILES)
+        if registration_form_user_extension.is_valid():
+            request.user.userextension.user_image = registration_form_user_extension.cleaned_data['user_image']
+            request.user.userextension.save()
+            return redirect('/profile/' + request.user.userextension.slug)
 
 
 def journal_detail(request, journal_slug):

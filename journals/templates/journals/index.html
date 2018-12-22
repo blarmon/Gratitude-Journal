@@ -39,11 +39,11 @@
         </form>
     </div>
     <div class="col-sm-5">
-        <h3>My latest posts</h3>
+        <h3>my latest posts</h3>
         {% for journal in latest_three_journals %}
             <div class="journal_container">
                 <div class="journal_date">{{ journal.date|date:"M d, Y" }}</div>
-                <a class="journal_user" id="user_profile" href="{% url 'profile' journal.user.userextension.slug %}">{{ journal.user.username }}</a>
+                <a class="journal_user" id="user_profile" href="{% url 'profile' journal.user.userextension.slug %}"><img src="{{ journal.user.userextension.user_image.url }}" alt="user image" height="30" width="30">&nbsp;{{ journal.user.username }}</a>
                 <div class="journal_title">
                     <a href="{% url 'journal_detail' journal.slug %}">{{ journal.title }}</a>
                 </div>

@@ -4,7 +4,7 @@
 <div class="row">
     <div class=" col-sm-12 text-center">
         {% if not user.is_authenticated %}
-            <h4>Log-in or register to start journaling!</h4>
+            <h4>log-in or register to start journaling!</h4>
             <a class="big-link" href="{% url 'login'%}">Log In</a>&nbsp;|
             <a class="big-link" href="{% url 'register'%}">Register</a>
             <br><br><h4>Or start by exploring other's journals below</h4><br>
@@ -19,35 +19,35 @@
         </form>
 
         {% if search_term %}
-            <h3>Search Results for search term: {{search_term }}</h3>
+            <h3>search results for search term: {{search_term }}</h3>
             <h5>Journals:</h5>
             <!-- TODO Display the first 100 or so words of the body! -->
             {% for journal in journal_search_results %}
         <div class="journal_container journal_search_result"></div>
                 <div class="journal_date">{{ journal.date|date:"M d, Y" }}</div>
-                <a class="journal_user" id="user_profile" href="{% url 'profile' journal.user.userextension.slug %}">{{ journal.user.username }}</a>
+                <a class="journal_user" id="user_profile" href="{% url 'profile' journal.user.userextension.slug %}"><img src="{{ journal.user.userextension.user_image.url }}" alt="user image" height="30" width="30">&nbsp;{{ journal.user.username }}</a>
                 <div class="journal_title"><a href="{% url 'journal_detail' journal.slug %}">{{ journal.title }}</a></div>
             {% endfor %}
             <br>
             <br>
             <h5>Users:</h5>
             {% for user in user_search_results %}
-            <div class="user_search_result"><div><a href="{% url 'profile' user.userextension.slug %}">{{ user.username }}</a></div></div>
+            <div class="user_search_result"><div><a href="{% url 'profile' user.userextension.slug %}"><img src="{{ user.userextension.user_image.url }}" alt="user image" height="30" width="30">&nbsp;{{ user.username }}</a></div></div>
             {% endfor %}
 
             {% else %}
                     <br>
-        <h5>Looking for someone?</h5>
-        <h5>Feeling uninspired?</h5>
-        <h6>Try searching for users or journals above</h6>
+        <h5>looking for someone?</h5>
+        <h5>feeling uninspired?</h5>
+        <h6>try searching for users or journals above</h6>
         {% endif %}
     </div>
     <div class="col-sm-5">
-        <h3>Latest Public Journals</h3>
+        <h3>latest public journals</h3>
         {% for journal in public_journals %}
             <div class="journal_container">
                 <div class="journal_date">{{ journal.date|date:"M d, Y" }}</div>
-                <a class="journal_user" id="user_profile" href="{% url 'profile' journal.user.userextension.slug %}">{{ journal.user.username }}</a>
+                <a class="journal_user" id="user_profile" href="{% url 'profile' journal.user.userextension.slug %}"><img src="{{ journal.user.userextension.user_image.url }}" alt="user image" height="30" width="30">&nbsp;{{ journal.user.username }}</a>
                 <div class="journal_title">
                     <a href="{% url 'journal_detail' journal.slug %}">{{ journal.title }}</a>
                 </div>

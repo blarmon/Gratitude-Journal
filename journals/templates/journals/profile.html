@@ -48,10 +48,21 @@
 });
 </script>
 <div class="text-center">
-    <img id="user_image" src="{{ user_profile.userextension.user_image.url }}" alt="user image" height="150" width="150">
+    <div id="user_image"><img src="{{ user_profile.userextension.user_image.url }}" alt="user image" height="150" width="150"></div>
+    {% if loggedin_user_profile %}
+    <form method="post" action="{% url 'edit_profile_image' %}" id="edit-image-form" enctype='multipart/form-data'>
+        {% csrf_token %}
+        {{ registration_form_user_extension.user_image }}
+        <br>
+        <input class="submit" type="submit" value='edit profile image'>
+    </form>
+    <br>
+    {% endif %}
     <h2 id="username">{{ user_profile.username }}</h2>
     <h4 id="user_email">{{ user_profile.email }}</h4>
+    {% if loggedin_user_profile %}
     <a href="{% url 'password_change' %}">change your password</a>
+    {% endif %}
     {% if user.is_authenticated and not loggedin_user_profile %}
         {% if followed_by %}
             <button type="button" class="unfollow-button">Unfollow</button>
