@@ -62,7 +62,7 @@ def profile(request, user_slug):
     if loggedin_user_profile:
         follows_users = request.user.userextension.follows.all()
         followed_by_users = request.user.userextension.followed_by.all()
-    context.update({'user_journals': user_journals, 'user_profile': user_profile, 'loggedin_user_profile': loggedin_user_profile, 'followed_by': followed_by, 'follows_users': follows_users, 'followed_by_users': followed_by_users})
+    context.update({'title': 'Profile','user_journals': user_journals, 'user_profile': user_profile, 'loggedin_user_profile': loggedin_user_profile, 'followed_by': followed_by, 'follows_users': follows_users, 'followed_by_users': followed_by_users})
     return render(request, 'journals/profile.html', context)
 
 
@@ -97,7 +97,7 @@ def feed(request):
     followed_users_extensions = request.user.userextension.follows.all()
     followed_users = User.objects.filter(userextension__in=followed_users_extensions)
     journals_from_followed = Journal.objects.filter(user__in=followed_users, public=True).order_by('-date')
-    context = {'journals_from_followed': journals_from_followed}
+    context = {'journals_from_followed': journals_from_followed, 'title': 'Feed'}
     return render(request, 'journals/feed.html', context)
 
 
