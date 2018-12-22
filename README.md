@@ -1,6 +1,6 @@
 # Gratitude-Journal
 
-## TODO add user pictures
+## TODO let users edit the images and get them on their profile pages. also attach them to journal posts!
 
 ## TODO add infinite scroll to the feed page.
 
@@ -13,3 +13,5 @@
 ## todo change password form, put in in profile
 
 ## todo hook up to smtp server before prod?
+
+## todo lookup serving static files in production

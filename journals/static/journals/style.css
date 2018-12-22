@@ -71,3 +71,7 @@ a:hover {
 #id_tags, #id_title, #id_body {
     width: 90%;
 }
+
+img {
+  border-radius: 50%;
+}

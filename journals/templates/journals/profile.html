@@ -48,8 +48,10 @@
 });
 </script>
 <div class="text-center">
+    <img id="user_image" src="{{ user_profile.userextension.user_image.url }}" alt="user image" height="150" width="150">
     <h2 id="username">{{ user_profile.username }}</h2>
     <h4 id="user_email">{{ user_profile.email }}</h4>
+    <p>{{user_profile.userextension.user_image.url}}</p>
     {% if user.is_authenticated and not loggedin_user_profile %}
         {% if followed_by %}
             <button type="button" class="unfollow-button">Unfollow</button>

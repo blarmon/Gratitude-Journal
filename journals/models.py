@@ -21,7 +21,7 @@ class UserExtension(models.Model):
     user = models.OneToOneField(User, on_delete=models.CASCADE)
     slug = AutoSlugField(populate_from=['user__username'])
     follows = models.ManyToManyField('UserExtension', related_name='followed_by')
-    user_image = models.ImageField(upload_to='journals/images/', default='journals/images/no-img.png', blank=True, null=True)
+    user_image = models.ImageField(upload_to='profile_image', default='profile_image/no-img.png', blank=True)
 
 @receiver(post_save, sender=User)
 def create_user_extension(sender, instance, created, **kwargs):
