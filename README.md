@@ -10,8 +10,6 @@
 
 ## todo use an apache server or something...
 
-## todo change password form, put in in profile
-
 ## todo hook up to smtp server before prod?
 
 ## todo lookup serving static files in production
