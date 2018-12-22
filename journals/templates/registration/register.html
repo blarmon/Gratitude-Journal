@@ -4,14 +4,16 @@
 
 <Title>Register</Title>
 
-<form method="post" action="{% url 'register' %}" id="user-registration-form">
+<form method="post" action="{% url 'register' %}" id="user-registration-form" enctype='multipart/form-data'>
     {% csrf_token %}
-    {% if form.errors %}
+    {% if registration_form.errors %}
     <p>There are errors in the form!</p>
     {% endif %}
 
-    {{ form|linebreaks }}<br>
-    <input class="submit" type="submit" value='Submit'>
+    {{ registration_form|linebreaks }}<br>
+
+    {{ registration_form_user_extension.as_p }}
+    <input class="submit" type="submit" value='register'>
 </form>
 
 {% endblock %}

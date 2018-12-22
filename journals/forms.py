@@ -1,5 +1,5 @@
 from django import forms
-from journals.models import Journal
+from journals.models import Journal, UserExtension
 from django.contrib.auth.models import User
 from django.contrib.auth.forms import UserCreationForm
 
@@ -27,3 +27,13 @@ class RegistrationForm(UserCreationForm):
             'password1',
             'password2',
         )
+
+
+class RegistrationFormUserExtension(forms.ModelForm):
+
+    class Meta:
+        model = UserExtension
+        fields = (
+            'user_image',
+        )
+

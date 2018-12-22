@@ -8,4 +8,8 @@
 
 ## todo confirm new accounts with emails?
 
-## todo add password reset.  it might already kind of exist with contrib.auth.  check the /password url
+## todo use an apache server or something...
+
+## todo change password form, put in in profile
+
+## todo hook up to smtp server before prod?

@@ -6,7 +6,7 @@ from django.contrib.auth.models import User
 from django.contrib.postgres.search import SearchQuery, SearchRank, SearchVector
 from django.db.models import Q
 
-from journals.forms import JournalForm, RegistrationForm
+from journals.forms import JournalForm, RegistrationForm, RegistrationFormUserExtension
 from journals.models import Journal, UserExtension
 
 
@@ -96,16 +96,22 @@ def delete_journal(request):
 
 def register(request):
     if request.method == 'POST':
-        form = RegistrationForm(request.POST)
-        if form.is_valid():
-            form.save()
-            username = form.cleaned_data['username']
-            password = form.cleaned_data['password1']
-
+        registration_form = RegistrationForm(request.POST)
+        registration_form_user_extension = RegistrationFormUserExtension(request.POST, request.FILES)
+        if registration_form.is_valid() and registration_form_user_extension.is_valid():
+            import pdb;
+            pdb.set_trace()
+            registration_form.save()
+            username = registration_form.cleaned_data['username']
+            password = registration_form.cleaned_data['password1']
             user = authenticate(username=username, password=password)
             login(request, user)
+            user.userextension.user_image=registration_form_user_extension.cleaned_data['user_image']
+            print(registration_form_user_extension.cleaned_data['user_image'])
+            user.userextension.save()
             return redirect('index')
     else:
-        form = RegistrationForm()
-    context = {'form': form}
+        registration_form = RegistrationForm()
+        registration_form_user_extension = RegistrationFormUserExtension()
+    context = {'registration_form': registration_form, 'registration_form_user_extension': registration_form_user_extension}
     return render(request, 'registration/register.html', context)
