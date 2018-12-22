@@ -125,6 +125,7 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/2.1/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(PROJECT_ROOT, 'static')
 
 MEDIA_URL = '/media/'
 
@@ -136,3 +137,8 @@ LOGOUT_REDIRECT_URL = '/'
 TAGGIT_CASE_INSENSITIVE = True
 
 EMAIL_BACKEND = 'django.core.mail.backends.console.EmailBackend'
+
+
+# Configure Django App for Heroku.
+import django_heroku
+django_heroku.settings(locals())
