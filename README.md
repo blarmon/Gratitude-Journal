@@ -13,3 +13,5 @@
 ## todo hook up to smtp server before prod?
 
 ## todo lookup serving static files in production
+
+## todo add a bunch of fake data in the heroku app.
