@@ -5,13 +5,14 @@ This is a site where users can post gratitude journals, either publicly, for oth
 ## Index
 
 Has a form for users to submit a new journal, as well as a spot to review their last few journals.  Inaccessible to unauthenticated users.  
+
 ## Explore
 
-The landing page for unauthenticated users.  If a user is unauthenticated this page will have buttons to register or login at the top.  There is a search function that will do a case insensitive search (i_contains) against both users and journals (title, body, and tags).  The section on the right shows the lastest few available public journals from any user on the site.
+The landing page for unauthenticated users.  If a user is unauthenticated this page will have buttons to register or login at the top.  There is a search function that will do a case insensitive search (i_contains) against both users and journals (title, body, and tags).  The section on the right shows the latest few available public journals from any user on the site.
 
 ## Feed
 
-This page shows all public journals from your followed users in reverse chronological order.
+This page shows all public journals from your followed users in reverse chronological order.  Inaccessible to unauthenticated users.  
 
 ## Profile
 
