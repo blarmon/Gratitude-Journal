@@ -1,7 +1,9 @@
 # Gratitude-Journal
 https://gratitude-journal-chris.herokuapp.com/
 
-This is a site where users can post gratitude journals, either publicly, for others to see, or privately, for their own eyes only.  They can explore other user's public journals, and if they so choose they can follow a given user, whose public journals will appear in reverse chronological order in their feed.  Users can follow an unlimited number of other users.  Users can also upload one profile picture, which will appear on their profile and next to their own journals.  I will explain the various pages of the site below.
+Feel free to clone this app onto your own machine if you would like to run the test suite (`python manage.py test` in the directory containing the manage.py file.)  Know that you will need the [chrome web driver](http://chromedriver.chromium.org/downloads) for selenium to function properly so the tests will run.  You may need to change the path to the web driver in the Gratitude Journal/tests.py file.
+
+This is a site where users can post gratitude journals, either publicly, for others to see, or privately, for their own eyes only.  They can explore other user's public journals, and if they so choose they can follow a given user, whose public journals will appear in reverse chronological order in their feed.  Users can follow an unlimited number of other users.  Users can also upload one profile picture, which will appear on their profile and next to their own journals.  I will explain the various pages of the site below:
 
 ## Index
 
