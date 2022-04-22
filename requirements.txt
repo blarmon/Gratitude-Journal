@@ -13,7 +13,7 @@ jsmin==2.2.2
 pdfrw==0.4
 Pillow==5.3.0
 psycopg2==2.7.5
-PyPDF2==1.26.0
+PyPDF2==1.27.5
 python-dateutil==1.5
 pytz==2018.5
 requests==2.19.1
